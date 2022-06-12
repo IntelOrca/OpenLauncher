@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IntelOrca.OpenLauncher.Core\IntelOrca.OpenLauncher.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources/icon-openloco.png" />
+    <Resource Include="resources/icon-openrct2.png" />
+  </ItemGroup>
+</Project>

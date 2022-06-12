@@ -10,6 +10,7 @@
         Width="500"
         Height="230"
         ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
         UseLayoutRounding="True">
     <Grid>
@@ -89,7 +90,11 @@
                                         Content="Download"
                                         Click="downloadButton_Click" />
                             </Grid>
-                            <CheckBox x:Name="showPreReleaseCheckbox" Content="Show pre-release versions" Margin="0,4" />
+                            <CheckBox x:Name="showPreReleaseCheckbox"
+                                      Margin="0,4"
+                                      Unchecked="showPreReleaseCheckbox_Changed"
+                                      Checked="showPreReleaseCheckbox_Changed"
+                                      Content="Show pre-release versions" />
                         </StackPanel>
                     </StackPanel>
                 </Border>

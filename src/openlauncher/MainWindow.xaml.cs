@@ -36,7 +36,7 @@ namespace openlauncher
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            gameListView.SelectedIndex = 0;
+            gameListView.SelectedIndex = 1;
             _ready = true;
             var selectedItem = gameListView.SelectedItem as GameMenuItem;
             await SetPageAsync(selectedItem);
@@ -64,6 +64,11 @@ namespace openlauncher
             await SetPageAsync(gameListView.SelectedItem as GameMenuItem);
         }
 
+        private async void showPreReleaseCheckbox_Changed(object sender, RoutedEventArgs e)
+        {
+            await RefreshAvailableVersionsAsync();
+        }
+
         private async void downloadButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedMenuItem == null)
@@ -74,11 +79,9 @@ namespace openlauncher
                 downloadButton.IsEnabled = false;
                 playButton.IsEnabled = false;
 
-                var builds = _selectedMenuItem.Builds;
-                var index = versionDropdown.SelectedIndex;
-                if (index >= 0 && index < builds.Length)
+                var selectedItem = versionDropdown.SelectedItem as ComboBoxItem;
+                if (selectedItem?.Tag is Build build)
                 {
-                    var build = builds[index];
                     var assets = build.Assets
                         .Where(x => x.IsApplicableForCurrentPlatform())
                         .OrderBy(x => x, BuildAssetComparer.Default)
@@ -101,8 +104,9 @@ namespace openlauncher
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ShowError("Failed to download build", ex);
             }
             finally
             {
@@ -121,8 +125,9 @@ namespace openlauncher
             {
                 _selectedMenuItem.InstallService.Launch();
             }
-            catch
+            catch (Exception ex)
             {
+                ShowError($"Failed to launch {_selectedMenuItem.Game!.Name}", ex);
             }
         }
 
@@ -131,20 +136,24 @@ namespace openlauncher
             if (_selectedMenuItem == null)
                 return;
 
+            var installService = _selectedMenuItem.InstallService;
             try
             {
-                var installService = _selectedMenuItem.InstallService;
                 var version = await installService.GetCurrentVersionAsync();
                 if (version == null && installService.CanLaunch())
                 {
                     version = "(Unknown)";
                 }
                 installedVersionTextBlock.Text = version;
-                playButton.IsEnabled = installService.CanLaunch();
-                playButton.ToolTip = installService.ExecutablePath;
             }
             catch
             {
+                installedVersionTextBlock.Text = string.Empty;
+            }
+            finally
+            {
+                playButton.IsEnabled = installService.CanLaunch();
+                playButton.ToolTip = installService.ExecutablePath;
             }
         }
 
@@ -159,22 +168,27 @@ namespace openlauncher
                 versionDropdown.Items.Clear();
 
                 // Refresh builds
+                var showDevelop = showPreReleaseCheckbox.IsChecked ?? false;
                 var builds = _selectedMenuItem.Builds;
-                if (builds.IsDefault)
+                if (builds.IsDefault || (showDevelop && !_selectedMenuItem.BuildsIncludeDevelop))
                 {
-                    builds = await _buildService.GetBuildsAsync(_selectedMenuItem.Game!);
+                    builds = await _buildService.GetBuildsAsync(_selectedMenuItem.Game!, showDevelop);
+                    _selectedMenuItem.BuildsIncludeDevelop = showDevelop;
                 }
                 _selectedMenuItem.Builds = builds;
 
                 // Populate list
                 foreach (var build in builds)
                 {
+                    if (!showDevelop && !build.IsRelease)
+                        continue;
+
                     if (build.Assets.Any(x => x.IsApplicableForCurrentPlatform()))
                     {
                         var content = build.PublishedAt is DateTime dt ?
                             $"{build.Version} (released {GetAge(dt)})" :
                             build.Version;
-                        versionDropdown.Items.Add(new ComboBoxItem() { Content = content });
+                        versionDropdown.Items.Add(new ComboBoxItem() { Content = content, Tag = build });
                     }
                 }
                 if (versionDropdown.Items.Count != 0)
@@ -183,9 +197,20 @@ namespace openlauncher
                     downloadButton.IsEnabled = true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                ShowError("Failed to obtain builds", ex);
             }
+        }
+
+        private void ShowError(string caption, Exception ex)
+        {
+            MessageBox.Show(
+                owner: this,
+                messageBoxText: ex.Message,
+                caption: caption,
+                button: MessageBoxButton.OK,
+                icon: MessageBoxImage.Error);
         }
 
         private static string GetAge(DateTime dt)
@@ -252,5 +277,6 @@ namespace openlauncher
             }
         }
         public ImmutableArray<Build> Builds { get; set; }
+        public bool BuildsIncludeDevelop { get; set; }
     }
 }

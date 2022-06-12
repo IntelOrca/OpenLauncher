@@ -5,15 +5,16 @@ namespace IntelOrca.OpenLauncher.Core
 {
     public class Game
     {
-        public static Game OpenRCT2 => new Game("OpenRCT2", "openrct2", true, new RepositoryName("OpenRCT2", "OpenRCT2"));
+        public static Game OpenRCT2 => new Game("OpenRCT2", "openrct2", true, new RepositoryName("OpenRCT2", "OpenRCT2"), new RepositoryName("Limetric", "OpenRCT2-binaries"));
         public static Game OpenLoco => new Game("OpenLoco", "openloco", false, new RepositoryName("OpenLoco", "OpenLoco"));
 
         public string Name { get; }
         public string BinaryName { get; }
         public string DefaultLocation { get; }
-        public RepositoryName Repository { get; set; }
+        public RepositoryName ReleaseRepository { get; set; }
+        public RepositoryName? DevelopRepository { get; set; }
 
-        private Game(string name, string binaryName, bool usesDocuments, RepositoryName repositoryName)
+        private Game(string name, string binaryName, bool usesDocuments, RepositoryName releaseRepo, RepositoryName? developRepo = null)
         {
             Name = name;
             BinaryName = binaryName;
@@ -22,7 +23,8 @@ namespace IntelOrca.OpenLauncher.Core
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             DefaultLocation = Path.Combine(root, name);
-            Repository = repositoryName;
+            ReleaseRepository = releaseRepo;
+            DevelopRepository = developRepo;
         }
     }
 

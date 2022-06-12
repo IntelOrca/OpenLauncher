@@ -11,6 +11,8 @@ namespace IntelOrca.OpenLauncher.Core
 {
     public class InstallService
     {
+        private const int BAD_ACCESS = unchecked((int)0x80070020);
+
         private readonly Game _game;
 
         private string BinPath => Path.Combine(_game.DefaultLocation, "bin");
@@ -102,16 +104,16 @@ namespace IntelOrca.OpenLauncher.Core
                 progress?.Report(1.0f);
                 ct.ThrowIfCancellationRequested();
 
+                // Backup old bin directory
                 var binDirectory = BinPath;
                 var backupDirectory = BinPath + ".backup";
+                if (Directory.Exists(binDirectory))
+                {
+                    Directory.Move(binDirectory, backupDirectory);
+                }
+
                 try
                 {
-                    // Backup old bin directory
-                    if (Directory.Exists(binDirectory))
-                    {
-                        Directory.Move(binDirectory, backupDirectory);
-                    }
-
                     // Create new bin directory
                     ZipFile.ExtractToDirectory(tempFile, binDirectory, overwriteFiles: true);
                     await File.WriteAllTextAsync(VersionFilePath, version).ConfigureAwait(false);
@@ -134,6 +136,10 @@ namespace IntelOrca.OpenLauncher.Core
                         Directory.Move(backupDirectory, binDirectory);
                     }
                 }
+            }
+            catch (IOException ex) when (ex.HResult == BAD_ACCESS)
+            {
+                throw new Exception("Failed to extract zip archive.", ex);
             }
             finally
             {

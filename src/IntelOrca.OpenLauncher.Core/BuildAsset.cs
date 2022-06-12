@@ -27,7 +27,8 @@ namespace IntelOrca.OpenLauncher.Core
             {
                 if (Name.Contains("installer", StringComparison.OrdinalIgnoreCase) ||
                     Name.Contains("symbols", StringComparison.OrdinalIgnoreCase) ||
-                    Name.Contains("winnt", StringComparison.OrdinalIgnoreCase))
+                    Name.Contains("winnt", StringComparison.OrdinalIgnoreCase) ||
+                    Name.Contains(".exe", StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }

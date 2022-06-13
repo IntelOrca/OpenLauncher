@@ -36,6 +36,8 @@ namespace IntelOrca.OpenLauncher.Core
             }
         }
 
+        public bool IsAppImage => Name.Contains("AppImage", StringComparison.OrdinalIgnoreCase);
+
         public OSPlatform? Platform
         {
             get
@@ -62,7 +64,7 @@ namespace IntelOrca.OpenLauncher.Core
             get
             {
                 if (Name.Contains("x64", StringComparison.OrdinalIgnoreCase) ||
-                    Name.Contains("x86_x64", StringComparison.OrdinalIgnoreCase))
+                    Name.Contains("x86_64", StringComparison.OrdinalIgnoreCase))
                 {
                     return Architecture.X64;
                 }
@@ -136,6 +138,13 @@ namespace IntelOrca.OpenLauncher.Core
                 if (y.Platform == CurrentPlatform)
                     return 1;
             }
+
+            // Prefer AppImage
+            if (x.IsAppImage && !y.IsAppImage)
+                return -1;
+            if (!x.IsAppImage && y.IsAppImage)
+                return 1;
+
             return 0;
         }
 

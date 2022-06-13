@@ -90,9 +90,9 @@ namespace openlauncher
                     if (asset != null)
                     {
                         var progress = new Progress<float>();
-                        progress.ProgressChanged += async (s, value) =>
+                        progress.ProgressChanged += (s, value) =>
                         {
-                            await Dispatcher.UIThread.InvokeAsync(() =>
+                            Dispatcher.UIThread.Post(() =>
                             {
                                 downloadButton.Content = $"{value * 100:0.0}%";
                             });
@@ -154,7 +154,6 @@ namespace openlauncher
             {
                 playButton.IsEnabled = installService.CanLaunch();
                 ToolTip.SetTip(playButton, installService.ExecutablePath);
-                // playButton.ToolTip = installService.ExecutablePath;
             }
         }
 

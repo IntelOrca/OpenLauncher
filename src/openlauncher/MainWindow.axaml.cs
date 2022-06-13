@@ -6,22 +6,17 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using IntelOrca.OpenLauncher.Core;
 
 namespace openlauncher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly BuildService _buildService = new();
@@ -32,9 +27,14 @@ namespace openlauncher
         public MainWindow()
         {
             InitializeComponent();
+
+            gameListView.Items = new[] {
+                new GameMenuItem(Game.OpenRCT2, "avares://openlauncher/resources/icon-openrct2.png"),
+                new GameMenuItem(Game.OpenLoco, "avares://openlauncher/resources/icon-openloco.png")
+            };
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Opened(object sender, EventArgs e)
         {
             gameListView.SelectedIndex = 1;
             _ready = true;
@@ -90,9 +90,9 @@ namespace openlauncher
                     if (asset != null)
                     {
                         var progress = new Progress<float>();
-                        progress.ProgressChanged += (s, value) =>
+                        progress.ProgressChanged += async (s, value) =>
                         {
-                            Dispatcher.Invoke(() =>
+                            await Dispatcher.UIThread.InvokeAsync(() =>
                             {
                                 downloadButton.Content = $"{value * 100:0.0}%";
                             });
@@ -153,7 +153,8 @@ namespace openlauncher
             finally
             {
                 playButton.IsEnabled = installService.CanLaunch();
-                playButton.ToolTip = installService.ExecutablePath;
+                ToolTip.SetTip(playButton, installService.ExecutablePath);
+                // playButton.ToolTip = installService.ExecutablePath;
             }
         }
 
@@ -165,7 +166,7 @@ namespace openlauncher
             try
             {
                 // Clear list
-                versionDropdown.Items.Clear();
+                versionDropdown.Items = new ComboBoxItem[0];
 
                 // Refresh builds
                 var showDevelop = showPreReleaseCheckbox.IsChecked ?? false;
@@ -178,6 +179,7 @@ namespace openlauncher
                 _selectedMenuItem.Builds = builds;
 
                 // Populate list
+                var items = new List<ComboBoxItem>();
                 foreach (var build in builds)
                 {
                     if (!showDevelop && !build.IsRelease)
@@ -188,11 +190,12 @@ namespace openlauncher
                         var content = build.PublishedAt is DateTime dt ?
                             $"{build.Version} (released {GetAge(dt)})" :
                             build.Version;
-                        versionDropdown.Items.Add(new ComboBoxItem() { Content = content, Tag = build });
+                        items.Add(new ComboBoxItem() { Content = content, Tag = build });
                     }
                 }
-                if (versionDropdown.Items.Count != 0)
+                if (items.Count != 0)
                 {
+                    versionDropdown.Items = items;
                     versionDropdown.SelectedIndex = 0;
                     downloadButton.IsEnabled = true;
                 }
@@ -205,12 +208,9 @@ namespace openlauncher
 
         private void ShowError(string caption, Exception ex)
         {
-            MessageBox.Show(
-                owner: this,
-                messageBoxText: ex.Message,
-                caption: caption,
-                button: MessageBoxButton.OK,
-                icon: MessageBoxImage.Error);
+            errorBox.IsVisible = true;
+            errorTitle.Text = caption;
+            errorMessage.Text = ex.Message;
         }
 
         private static string GetAge(DateTime dt)
@@ -264,8 +264,16 @@ namespace openlauncher
     {
         private InstallService? _installService;
 
-        public Game? Game { get; set; }
-        public ImageSource? Image { get; set; }
+        public Game Game { get; set; }
+        public Bitmap Image { get; }
+        public ImmutableArray<Build> Builds { get; set; }
+        public bool BuildsIncludeDevelop { get; set; }
+
+        public GameMenuItem(Game game, string imagePath)
+        {
+            Game = game;
+            Image = GetImage(imagePath);
+        }
 
         public InstallService InstallService
         {
@@ -276,7 +284,12 @@ namespace openlauncher
                 return _installService;
             }
         }
-        public ImmutableArray<Build> Builds { get; set; }
-        public bool BuildsIncludeDevelop { get; set; }
+
+        private static Bitmap GetImage(string path)
+        {
+            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
+            var uriContext = AvaloniaLocator.Current.GetService<IUriContext>();
+            return new Bitmap(assets!.Open(new Uri(path)));
+        }
     }
 }

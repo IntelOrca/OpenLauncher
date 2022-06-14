@@ -295,7 +295,7 @@ namespace openlauncher
         public GameMenuItem(Game game, string imagePath)
         {
             Game = game;
-            Image = GetImage(imagePath);
+            Image = App.GetImage(imagePath);
         }
 
         public InstallService InstallService
@@ -306,13 +306,6 @@ namespace openlauncher
                     _installService = new InstallService(Game!);
                 return _installService;
             }
-        }
-
-        private static Bitmap GetImage(string path)
-        {
-            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-            var uriContext = AvaloniaLocator.Current.GetService<IUriContext>();
-            return new Bitmap(assets!.Open(new Uri(path)));
         }
     }
 }

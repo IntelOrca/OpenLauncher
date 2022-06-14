@@ -10,6 +10,7 @@
         SizeToContent="Height"
         Width="800"
         WindowStartupLocation="CenterScreen"
+        Icon="/resources/logo.ico"
         Opened="Window_Opened">
     <Window.Styles>
         <Style Selector="Button">

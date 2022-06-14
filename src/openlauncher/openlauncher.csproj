@@ -16,9 +16,14 @@
     <PublishSingleFile>true</PublishSingleFile>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <ApplicationIcon>resources\logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <AvaloniaResource Include="resources\**"/>
+    <AvaloniaResource Include="resources\**" />
+    <AvaloniaResource Remove="resources\*.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IntelOrca.OpenLauncher.Core\IntelOrca.OpenLauncher.Core.csproj" />

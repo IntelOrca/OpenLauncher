@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace IntelOrca.OpenLauncher.Core
 {
@@ -19,12 +20,24 @@ namespace IntelOrca.OpenLauncher.Core
             Name = name;
             BinaryName = binaryName;
 
-            var root = usesDocuments ?
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var root = GetLocation(usesDocuments);
             DefaultLocation = Path.Combine(root, name);
             ReleaseRepository = releaseRepo;
             DevelopRepository = developRepo;
+        }
+
+        private string GetLocation(bool usesDocuments)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return usesDocuments ?
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) :
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            }
+            else
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            }
         }
     }
 

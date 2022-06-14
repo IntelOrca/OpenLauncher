@@ -28,6 +28,12 @@ namespace openlauncher
         {
             InitializeComponent();
 
+            if (!Design.IsDesignMode)
+            {
+                downloadProgress.IsVisible = false;
+                errorBox.Opacity = 0;
+            }
+
             gameListView.Items = new[] {
                 new GameMenuItem(Game.OpenRCT2, "avares://openlauncher/resources/icon-openrct2.png"),
                 new GameMenuItem(Game.OpenLoco, "avares://openlauncher/resources/icon-openloco.png")
@@ -51,8 +57,11 @@ namespace openlauncher
             if (item != null)
             {
                 titleTextBlock.Text = item.Game!.Name;
-                await RefreshInstalledVersionAsync();
-                await RefreshAvailableVersionsAsync();
+                if (!Design.IsDesignMode)
+                {
+                    await RefreshInstalledVersionAsync();
+                    await RefreshAvailableVersionsAsync();
+                }
             }
             else
             {
@@ -76,6 +85,9 @@ namespace openlauncher
 
             try
             {
+                showPreReleaseCheckbox.IsEnabled = false;
+                versionDropdown.IsHitTestVisible = false;
+                downloadProgress.IsVisible = true;
                 downloadButton.IsEnabled = false;
                 playButton.IsEnabled = false;
 
@@ -89,12 +101,21 @@ namespace openlauncher
                     var asset = assets.FirstOrDefault();
                     if (asset != null)
                     {
-                        var progress = new Progress<float>();
-                        progress.ProgressChanged += (s, value) =>
+                        var progress = new Progress<InstallService.DownloadProgressReport>();
+                        progress.ProgressChanged += (s, report) =>
                         {
                             Dispatcher.UIThread.Post(() =>
                             {
-                                downloadButton.Content = $"{value * 100:0.0}%";
+                                downloadButton.Content = report.Status;
+                                if (report.Value is float value)
+                                {
+                                    downloadProgress.IsIndeterminate = false;
+                                    downloadProgress.Value = value;
+                                }
+                                else
+                                {
+                                    downloadProgress.IsIndeterminate = true;
+                                }
                             });
                         };
 
@@ -113,6 +134,9 @@ namespace openlauncher
                 downloadButton.Content = "Download";
                 downloadButton.IsEnabled = true;
                 playButton.IsEnabled = _selectedMenuItem.InstallService.CanLaunch();
+                downloadProgress.IsVisible = false;
+                versionDropdown.IsHitTestVisible = true;
+                showPreReleaseCheckbox.IsEnabled = true;
             }
         }
 
@@ -207,7 +231,7 @@ namespace openlauncher
 
         private void ShowError(string caption, Exception ex)
         {
-            errorBox.IsVisible = true;
+            errorBox.Opacity = 1;
             errorTitle.Text = caption;
             errorMessage.Text = ex.Message;
         }

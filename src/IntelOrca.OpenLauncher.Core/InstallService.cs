@@ -69,23 +69,31 @@ namespace IntelOrca.OpenLauncher.Core
             Process.Start(exePath);
         }
 
-        public async Task DownloadVersion(string version, Uri uri, IProgress<float> progress, CancellationToken ct)
+        public async Task DownloadVersion(string version, Uri uri, IProgress<DownloadProgressReport> progress, CancellationToken ct)
         {
+            const string StatusDownloading = "Downloading";
+            const string StatusExtracting = "Extracting";
+
             ct.ThrowIfCancellationRequested();
 
             string? tempFile = null;
             try
             {
-                progress?.Report(0.0f);
+                progress?.Report(new DownloadProgressReport(StatusDownloading, 0.0f));
 
                 var client = new HttpClient();
-                var response = await client.GetAsync(uri).ConfigureAwait(false);
+                var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
                 tempFile = Path.GetTempFileName();
                 using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write))
                 {
-                    var totalBytes = stream.Length;
+                    var totalBytes = response.Content.Headers.ContentLength;
+                    if (totalBytes == null)
+                    {
+                        progress?.Report(new DownloadProgressReport(StatusDownloading, null));
+                    }
+
                     var downloadedBytes = 0;
                     while (true)
                     {
@@ -98,10 +106,13 @@ namespace IntelOrca.OpenLauncher.Core
 
                         await fs.WriteAsync(buffer, 0, read).ConfigureAwait(false);
                         downloadedBytes += read;
-                        progress?.Report((float)downloadedBytes / totalBytes);
+                        if (totalBytes != null)
+                        {
+                            progress?.Report(new DownloadProgressReport(StatusDownloading, (float)downloadedBytes / totalBytes.Value));
+                        }
                     }
                 }
-                progress?.Report(1.0f);
+                progress?.Report(new DownloadProgressReport(StatusExtracting, 1.0f));
                 ct.ThrowIfCancellationRequested();
 
                 // Backup old bin directory
@@ -230,6 +241,18 @@ namespace IntelOrca.OpenLauncher.Core
             }
             catch
             {
+            }
+        }
+
+        public struct DownloadProgressReport
+        {
+            public string Status { get; }
+            public float? Value { get; }
+
+            public DownloadProgressReport(string status, float? value)
+            {
+                Status = status;
+                Value = value;
             }
         }
     }

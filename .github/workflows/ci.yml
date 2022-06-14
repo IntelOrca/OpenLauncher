@@ -3,7 +3,16 @@ on: [push, pull_request]
 jobs:
   build:
     name: Build OpenLauncher
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu
+          rid: linux-x64
+        - os: windows
+          rid: win-x64
+
+    runs-on: ${{ matrix.os }}-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -17,27 +26,19 @@ jobs:
       run: dotnet build -c Release --no-restore
     - name: Test
       run: dotnet test --no-restore
-    - name: Publish (linux-x64)
+    - name: Publish
       working-directory: src/openlauncher
-      run: dotnet publish -c Release -r linux-x64 --self-contained
-    - name: Upload artifacts (linux-x64)
-      uses: actions/upload-artifact@v2
-      with:
-        name: "OpenLauncher-linux-x64"
-        path: src/openlauncher/bin/Release/net6.0/linux-x64/publish/openlauncher.exe
-    - name: Publish (win-x64)
-      working-directory: src/openlauncher
-      run: dotnet publish -c Release -r win-x64 --self-contained
+      run: dotnet publish -c Release -r ${{ matrix.rid }} --self-contained
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: "OpenLauncher-win-x64"
-        path: src/openlauncher/bin/Release/net6.0/win-x64/publish/openlauncher.exe
+        name: "OpenLauncher-${{ matrix.rid }}"
+        path: src/openlauncher/bin/Release/net6.0/${{ matrix.rid }}/publish/**/*
     - name: Create release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         fail_on_unmatched_files: true
         files: |
-          src/openlauncher/bin/Release/net6.0/linux-x64/publish/openlauncher
-          src/openlauncher/bin/Release/net6.0/win-x64/publish/openlauncher.exe
+          src/openlauncher/bin/Release/net6.0/${{ matrix.rid }}/publish/openlauncher
+          src/openlauncher/bin/Release/net6.0/${{ matrix.rid }}/publish/openlauncher.exe

@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Threading;
 using IntelOrca.OpenLauncher.Core;
 
@@ -232,8 +227,8 @@ namespace openlauncher
         private void ShowError(string caption, Exception ex)
         {
             errorBox.Opacity = 1;
-            errorTitle.Text = caption;
-            errorMessage.Text = ex.Message;
+            errorBox.Title = caption;
+            errorBox.Message = ex.Message;
         }
 
         private static string GetAge(DateTime dt)

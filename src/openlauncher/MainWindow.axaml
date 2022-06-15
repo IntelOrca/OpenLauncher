@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        xmlns:local="using:openlauncher"
         mc:Ignorable="d"
         x:Class="openlauncher.MainWindow"
         Title="Open Launcher"
@@ -99,24 +99,8 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border x:Name="errorBox"
-                        Background="#fcc"
-                        Margin="0,8">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <PathIcon Grid.Column="0"
-                                  Margin="8"
-                                  Width="32"
-                                  Height="32"
-                                  VerticalAlignment="Top"
-                                  Data="{StaticResource error_circle_regular}" />
-                        <StackPanel Grid.Column="1" Margin="8">
-                            <TextBlock x:Name="errorTitle" Text="Failed to obtain builds" />
-                            <TextBlock x:Name="errorMessage"
-                                       TextWrapping="Wrap"
-                                       Text="API rate limit exceeded for 0.0.0.0. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                <local:AlertBox x:Name="errorBox"
+                                Margin="0,8" />
             </StackPanel>
         </Border>
     </Grid>

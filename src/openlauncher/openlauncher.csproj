@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyVersion>0.1</AssemblyVersion>
     <Copyright>Copyright (C) Ted John 2022</Copyright>

@@ -1,4 +1,4 @@
-﻿namespace IntelOrca.OpenLauncher.Core
+namespace IntelOrca.OpenLauncher.Core
 {
     public struct DownloadProgressReport
     {

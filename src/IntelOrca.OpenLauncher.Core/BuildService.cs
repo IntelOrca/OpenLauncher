@@ -24,7 +24,7 @@ namespace IntelOrca.OpenLauncher.Core
             }
         }
 
-        private async Task<ImmutableArray<Build>> GetBuildsAsync(RepositoryName repo, bool isRelease)
+        public async Task<ImmutableArray<Build>> GetBuildsAsync(RepositoryName repo, bool isRelease)
         {
             var apiOptions = new ApiOptions()
             {

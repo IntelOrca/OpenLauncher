@@ -18,6 +18,19 @@ namespace IntelOrca.OpenLauncher.Core
             Assets = assets;
         }
 
+        public Version? ParsedVersion
+        {
+            get
+            {
+                var text = Version;
+                if (text.StartsWith("v"))
+                {
+                    text = text[1..];
+                }
+                return System.Version.TryParse(text, out var parsedVersion) ? parsedVersion : null;
+            }
+        }
+
         public override string ToString() => Version;
 
         public int CompareTo(Build other)

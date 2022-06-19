@@ -43,7 +43,8 @@ namespace IntelOrca.OpenLauncher.Core
             get
             {
                 if (Name.Contains("windows", StringComparison.OrdinalIgnoreCase) ||
-                    Name.Contains("win", StringComparison.OrdinalIgnoreCase))
+                    Name.Contains("win", StringComparison.OrdinalIgnoreCase) ||
+                    Name.Contains(".exe", StringComparison.OrdinalIgnoreCase))
                 {
                     return OSPlatform.Windows;
                 }
@@ -89,9 +90,6 @@ namespace IntelOrca.OpenLauncher.Core
 
         public bool IsApplicableForCurrentPlatform()
         {
-            if (!IsPortable)
-                return false;
-
             if (Platform != null && Platform != BuildAssetComparer.CurrentPlatform)
                 return false;
             if (Arch != null && Arch != BuildAssetComparer.CurrentArch)

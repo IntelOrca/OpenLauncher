@@ -18,6 +18,8 @@ namespace openlauncher
 
         private GameMenuItem? _selectedMenuItem;
         private bool _ready;
+        private UpdateCheckResult? _updateCheckResult;
+        private bool _isBusy;
 
         public MainWindow()
         {
@@ -27,6 +29,7 @@ namespace openlauncher
             {
                 downloadProgress.IsVisible = false;
                 errorBox.Opacity = 0;
+                updateBoxContainer.Opacity = 0;
             }
 
             gameListView.Items = new[] {
@@ -41,6 +44,11 @@ namespace openlauncher
             _ready = true;
             var selectedItem = gameListView.SelectedItem as GameMenuItem;
             await SetPageAsync(selectedItem);
+
+            if (!Design.IsDesignMode)
+            {
+                await DoUpdateCheck();
+            }
         }
 
         private async Task SetPageAsync(GameMenuItem? item)
@@ -63,6 +71,21 @@ namespace openlauncher
             }
         }
 
+        private async Task DoUpdateCheck()
+        {
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            if (version == null)
+                return;
+
+            var updateService = new UpdateService();
+            var checkResult = await updateService.CheckUpdateAsync(_buildService, version);
+            if (checkResult != null && checkResult.UpdateAvailable)
+            {
+                updateBoxContainer.Opacity = 1;
+                _updateCheckResult = checkResult;
+            }
+        }
+
         private async void gameListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await SetPageAsync(gameListView.SelectedItem as GameMenuItem);
@@ -80,23 +103,21 @@ namespace openlauncher
 
             try
             {
-                showPreReleaseCheckbox.IsEnabled = false;
-                versionDropdown.IsHitTestVisible = false;
                 downloadProgress.IsVisible = true;
-                downloadButton.IsEnabled = false;
-                playButton.IsEnabled = false;
+                SetAllInteractionEnabled(false);
 
                 var selectedItem = versionDropdown.SelectedItem as ComboBoxItem;
                 if (selectedItem?.Tag is Build build)
                 {
                     var assets = build.Assets
+                        .Where(x => x.IsPortable)
                         .Where(x => x.IsApplicableForCurrentPlatform())
                         .OrderBy(x => x, BuildAssetComparer.Default)
                         .ToArray();
                     var asset = assets.FirstOrDefault();
                     if (asset != null)
                     {
-                        var progress = new Progress<InstallService.DownloadProgressReport>();
+                        var progress = new Progress<DownloadProgressReport>();
                         progress.ProgressChanged += (s, report) =>
                         {
                             Dispatcher.UIThread.Post(() =>
@@ -115,7 +136,13 @@ namespace openlauncher
                         };
 
                         var cts = new CancellationTokenSource();
-                        await _selectedMenuItem.InstallService.DownloadVersion(build.Version, asset.Uri, progress, cts.Token);
+                        await _selectedMenuItem.InstallService.DownloadVersion(
+                            new DownloadService(),
+                            new Shell(),
+                            build.Version,
+                            asset.Uri,
+                            progress,
+                            cts.Token);
                         await RefreshInstalledVersionAsync();
                     }
                 }
@@ -127,11 +154,8 @@ namespace openlauncher
             finally
             {
                 downloadButton.Content = "Download";
-                downloadButton.IsEnabled = true;
-                playButton.IsEnabled = _selectedMenuItem.InstallService.CanLaunch();
                 downloadProgress.IsVisible = false;
-                versionDropdown.IsHitTestVisible = true;
-                showPreReleaseCheckbox.IsEnabled = true;
+                SetAllInteractionEnabled(true);
             }
         }
 
@@ -171,7 +195,10 @@ namespace openlauncher
             }
             finally
             {
-                playButton.IsEnabled = installService.CanLaunch();
+                if (!_isBusy)
+                {
+                    playButton.IsEnabled = installService.CanLaunch();
+                }
                 ToolTip.SetTip(playButton, installService.ExecutablePath);
             }
         }
@@ -203,7 +230,7 @@ namespace openlauncher
                     if (!showDevelop && !build.IsRelease)
                         continue;
 
-                    if (build.Assets.Any(x => x.IsApplicableForCurrentPlatform()))
+                    if (build.Assets.Any(x => x.IsPortable && x.IsApplicableForCurrentPlatform()))
                     {
                         var content = build.PublishedAt is DateTime dt ?
                             $"{build.Version} (released {GetAge(dt)})" :
@@ -215,7 +242,10 @@ namespace openlauncher
                 {
                     versionDropdown.Items = items;
                     versionDropdown.SelectedIndex = 0;
-                    downloadButton.IsEnabled = true;
+                    if (!_isBusy)
+                    {
+                        downloadButton.IsEnabled = true;
+                    }
                 }
             }
             catch (Exception ex)
@@ -226,9 +256,79 @@ namespace openlauncher
 
         private void ShowError(string caption, Exception ex)
         {
+            ShowError(caption, ex.Message);
+        }
+
+        private void ShowError(string caption, string message)
+        {
             errorBox.Opacity = 1;
             errorBox.Title = caption;
-            errorBox.Message = ex.Message;
+            errorBox.Message = message;
+        }
+
+        private async void update_Click(object sender, RoutedEventArgs e)
+        {
+            if (_updateCheckResult == null)
+                return;
+
+            var processPath = Environment.ProcessPath;
+            if (processPath == null)
+            {
+                ShowError("Launcher update failed", "Unable to obtain path to running process.");
+                return;
+            }
+
+            try
+            {
+                SetAllInteractionEnabled(false);
+
+                var progress = new Progress<DownloadProgressReport>(report =>
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        updateButton.Content = $"{report.Value * 100:0}%";
+                    });
+                });
+
+                var updateService = new UpdateService();
+                await updateService.DownloadAndUpdateAsync(
+                    new DownloadService(),
+                    new Shell(),
+                    processPath,
+                    _updateCheckResult.DownloadUri,
+                    progress,
+                    default);
+            }
+            catch (Exception ex)
+            {
+                ShowError("Launcher update failed", ex);
+            }
+            finally
+            {
+                updateButton.Content = "Update";
+                SetAllInteractionEnabled(true);
+            }
+        }
+
+        private void SetAllInteractionEnabled(bool value)
+        {
+            _isBusy = !value;
+
+            gameListView.IsEnabled = value;
+            updateButton.IsEnabled = value;
+            versionDropdown.IsHitTestVisible = value;
+            showPreReleaseCheckbox.IsEnabled = value;
+
+            if (value)
+            {
+                playButton.IsEnabled = _selectedMenuItem?.InstallService.CanLaunch() ?? false;
+                downloadButton.IsEnabled = versionDropdown.Items.GetEnumerator().MoveNext();
+            }
+            else
+            {
+                playButton.IsEnabled = value;
+                downloadButton.IsEnabled = value;
+            }
         }
 
         private static string GetAge(DateTime dt)

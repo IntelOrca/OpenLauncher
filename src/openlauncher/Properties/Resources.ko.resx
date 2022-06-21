@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>Open Launcher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Installed:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Available:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Unknown)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="ShowPreReleaseVersions" xml:space="preserve">
+    <value>Show pre-release versions</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Launcher update available</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>A new launcher update is available to download.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>Failed to launch {0}</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>Failed to download build</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>a minute ago</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>{0} minutes ago</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>an hour ago</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>{0} hours ago</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>a day ago</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>{0} days ago</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>a month ago</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>{0} months ago</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>a year ago</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>{0} years ago</value>
+  </data>
+</root>

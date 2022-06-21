@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using IntelOrca.OpenLauncher.Core;
+using StringResources = openlauncher.Properties.Resources;
 
 namespace openlauncher
 {
@@ -149,11 +150,11 @@ namespace openlauncher
             }
             catch (Exception ex)
             {
-                ShowError("Failed to download build", ex);
+                ShowError(StringResources.DownloadBuildFailedTitle, ex);
             }
             finally
             {
-                downloadButton.Content = "Download";
+                downloadButton.Content = StringResources.Download;
                 downloadProgress.IsVisible = false;
                 SetAllInteractionEnabled(true);
             }
@@ -170,7 +171,7 @@ namespace openlauncher
             }
             catch (Exception ex)
             {
-                ShowError($"Failed to launch {_selectedMenuItem.Game!.Name}", ex);
+                ShowError(string.Format(StringResources.FailedToLaunchGame, _selectedMenuItem.Game!.Name), ex);
             }
         }
 
@@ -185,7 +186,7 @@ namespace openlauncher
                 var version = await installService.GetCurrentVersionAsync();
                 if (version == null && installService.CanLaunch())
                 {
-                    version = "(Unknown)";
+                    version = StringResources.Unknown;
                 }
                 installedVersionTextBlock.Text = version;
             }
@@ -336,19 +337,17 @@ namespace openlauncher
 
         private static string GetAge(DateTime dt)
         {
-            const string template = "{0} {1} ago";
             var offset = DateTime.UtcNow - dt.ToUniversalTime();
             if (offset.TotalDays < 1)
             {
                 var hours = offset.TotalHours;
                 if (hours < 1)
                 {
-                    var minutes = offset.TotalMinutes;
-                    return Pluralise(template, minutes, "minute");
+                    return Pluralise(offset.TotalMinutes, StringResources.Minute, StringResources.Minutes);
                 }
                 else
                 {
-                    return Pluralise(template, hours, "hour");
+                    return Pluralise(hours, StringResources.Hour, StringResources.Hours);
                 }
             }
             else
@@ -360,23 +359,23 @@ namespace openlauncher
                     if (months >= 24)
                     {
                         var years = months / 12;
-                        return Pluralise(template, years, "year");
+                        return Pluralise(years, StringResources.Year, StringResources.Years);
                     }
                     else
                     {
-                        return Pluralise(template, months, "month");
+                        return Pluralise(months, StringResources.Month, StringResources.Months);
                     }
                 }
                 else
                 {
-                    return Pluralise(template, days, "day");
+                    return Pluralise(days, StringResources.Day, StringResources.Days);
                 }
             }
 
-            static string Pluralise(string template, double d, string subject)
+            static string Pluralise(double d, string singular, string plural)
             {
                 var n = (int)d;
-                return string.Format(template, n, n == 1 ? subject : subject + "s");
+                return string.Format(n == 1 ? singular : plural, n);
             }
         }
     }

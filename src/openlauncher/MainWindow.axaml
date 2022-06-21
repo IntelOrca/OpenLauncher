@@ -3,9 +3,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="using:openlauncher"
+        xmlns:p="using:openlauncher.Properties"
         mc:Ignorable="d"
         x:Class="openlauncher.MainWindow"
-        Title="Open Launcher"
+        Title="{x:Static p:Resources.OpenLauncher}"
         CanResize="False"
         SizeToContent="Height"
         Width="800"
@@ -52,7 +53,7 @@
                 </Border>
                 <Border Padding="4">
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Installed: " />
+                        <TextBlock Text="{x:Static p:Resources.InstalledLabel}" />
                         <Grid Margin="4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -69,10 +70,10 @@
                             <Button Grid.Column="2"
                                     x:Name="playButton"
                                     IsEnabled="False"
-                                    Content="Play"
+                                    Content="{x:Static p:Resources.Play}"
                                     Click="playButton_Click" />
                         </Grid>
-                        <TextBlock Text="Available: " />
+                        <TextBlock Text="{x:Static p:Resources.AvailableLabel}" />
                         <StackPanel Margin="4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -91,12 +92,12 @@
                                 <Button x:Name="downloadButton"
                                         Grid.Column="2"
                                         IsEnabled="False"
-                                        Content="Download"
+                                        Content="{x:Static p:Resources.Download}"
                                         Click="downloadButton_Click" />
                             </Grid>
                             <CheckBox x:Name="showPreReleaseCheckbox"
                                       Margin="0,4"
-                                      Content="Show pre-release versions"
+                                      Content="{x:Static p:Resources.ShowPreReleaseVersions}"
                                       Checked="showPreReleaseCheckbox_Changed"
                                       Unchecked="showPreReleaseCheckbox_Changed" />
                         </StackPanel>
@@ -107,12 +108,12 @@
                 <Grid x:Name="updateBoxContainer">
                     <local:AlertBox Margin="0,0,0,8"
                                     Kind="Warning"
-                                    Title="Launcher update available"
-                                    Message="A new launcher update is available to download." />
+                                    Title="{x:Static p:Resources.LauncherUpdateTitle}"
+                                    Message="{x:Static p:Resources.LauncherUpdateMessage}" />
                     <Button Name="updateButton"
                             Margin="0,0,14,0"
                             HorizontalAlignment="Right"
-                            Content="Update"
+                            Content="{x:Static p:Resources.Update}"
                             Click="update_Click">
                     </Button>
                 </Grid>

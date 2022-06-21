@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,10 +65,33 @@ namespace IntelOrca.OpenLauncher.Core
             }
         }
 
-        public void Launch()
+        public Task Launch()
         {
-            var exePath = ExecutablePath;
-            Process.Start(exePath);
+            return Task.Run(async () =>
+            {
+                var psi = new ProcessStartInfo(ExecutablePath)
+                {
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
+                };
+                var process = Process.Start(psi);
+                var outputBuilder = new StringBuilder();
+                var sw = Stopwatch.StartNew();
+                while (sw.ElapsedMilliseconds < 2000)
+                {
+                    var s = process.StandardError.ReadToEnd();
+                    if (s != null)
+                        outputBuilder.Append(s);
+
+                    await Task.Delay(10);
+
+                    if (process.HasExited && process.ExitCode != 0)
+                    {
+                        outputBuilder.Append(process.StandardError.ReadToEnd());
+                        throw new Exception(outputBuilder.ToString());
+                    }
+                }
+            });
         }
 
         public async Task DownloadVersion(
@@ -138,14 +162,7 @@ namespace IntelOrca.OpenLauncher.Core
                 shell.CreateDirectory(outDirectory);
                 var binaryPath = Path.Combine(outDirectory, _game.BinaryName);
                 shell.MoveFile(archivePath, binaryPath);
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    var exitCode = shell.RunProcess("chmod", "+x", binaryPath);
-                    if (exitCode != 0)
-                    {
-                        throw new Exception($"Failed to run chmod on '{binaryPath}'");
-                    }
-                }
+                shell.SetExecutable(binaryPath);
             }
             else if (uri.LocalPath.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase))
             {

@@ -40,7 +40,7 @@ namespace openlauncher
 
         private async void Window_Opened(object sender, EventArgs e)
         {
-            gameListView.SelectedIndex = 1;
+            gameListView.SelectedIndex = 0;
             _ready = true;
             var selectedItem = gameListView.SelectedItem as GameMenuItem;
             await SetPageAsync(selectedItem);
@@ -159,14 +159,14 @@ namespace openlauncher
             }
         }
 
-        private void playButton_Click(object sender, RoutedEventArgs e)
+        private async void playButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedMenuItem == null)
                 return;
 
             try
             {
-                _selectedMenuItem.InstallService.Launch();
+                await _selectedMenuItem.InstallService.Launch();
             }
             catch (Exception ex)
             {
@@ -212,6 +212,7 @@ namespace openlauncher
             {
                 // Clear list
                 versionDropdown.Items = new ComboBoxItem[0];
+                versionDropdown.IsHitTestVisible = false;
 
                 // Refresh builds
                 var showDevelop = showPreReleaseCheckbox.IsChecked ?? false;
@@ -245,6 +246,7 @@ namespace openlauncher
                     if (!_isBusy)
                     {
                         downloadButton.IsEnabled = true;
+                        versionDropdown.IsHitTestVisible = true;
                     }
                 }
             }
@@ -312,17 +314,18 @@ namespace openlauncher
 
         private void SetAllInteractionEnabled(bool value)
         {
-            _isBusy = !value;
+            var buildsAvailable = versionDropdown.Items.GetEnumerator().MoveNext();
 
+            _isBusy = !value;
             gameListView.IsEnabled = value;
             updateButton.IsEnabled = value;
-            versionDropdown.IsHitTestVisible = value;
+            versionDropdown.IsHitTestVisible = value && buildsAvailable;
             showPreReleaseCheckbox.IsEnabled = value;
 
             if (value)
             {
                 playButton.IsEnabled = _selectedMenuItem?.InstallService.CanLaunch() ?? false;
-                downloadButton.IsEnabled = versionDropdown.Items.GetEnumerator().MoveNext();
+                downloadButton.IsEnabled = buildsAvailable;
             }
             else
             {

@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace IntelOrca.OpenLauncher.Core
 {
@@ -72,5 +74,17 @@ namespace IntelOrca.OpenLauncher.Core
         }
 
         public Task WriteAllTextAsync(string path, string contents) => File.WriteAllTextAsync(path, contents);
+
+        public void SetExecutable(string path)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                var exitCode = RunProcess("chmod", "+x", path);
+                if (exitCode != 0)
+                {
+                    throw new Exception($"Failed to run chmod on '{path}'");
+                }
+            }
+        }
     }
 }

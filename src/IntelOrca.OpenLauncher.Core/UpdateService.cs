@@ -64,6 +64,7 @@ namespace IntelOrca.OpenLauncher.Core
                 shell.MoveFile(currentBinaryTempPath, processPath);
                 throw new Exception("Unable to move downloaded file to current launcher location.");
             }
+            shell.SetExecutable(processPath);
 
             // Update successful, now we just need to launch the new process and quit this one
             try

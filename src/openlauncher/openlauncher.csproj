@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyVersion>0.1</AssemblyVersion>
+    <AssemblyVersion>0.2</AssemblyVersion>
     <Copyright>Copyright (C) Ted John 2022</Copyright>
     <Product>Launcher for OpenRCT2 and OpenLoco</Product>
   </PropertyGroup>

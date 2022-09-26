@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace IntelOrca.OpenLauncher.Core
 {
@@ -11,14 +9,13 @@ namespace IntelOrca.OpenLauncher.Core
         private static string ConfigFileDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OpenLauncher");
         private static string ConfigFilePath => Path.Combine(ConfigFileDir, "config.json");
 
-        private static readonly JsonSerializerOptions _serializerOptions = new ()
+        private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        private Config _config = new();
-
+        private Config _config;
 
         public ConfigService()
         {
@@ -28,16 +25,28 @@ namespace IntelOrca.OpenLauncher.Core
             }
             else
             {
-                var configJson = File.ReadAllText(ConfigFilePath);
-                _config = JsonSerializer.Deserialize<Config>(configJson, _serializerOptions);
+                try
+                {
+                    var configJson = File.ReadAllText(ConfigFilePath);
+                    _config = JsonSerializer.Deserialize<Config>(configJson, _serializerOptions);
+                }
+                catch
+                {
+                }
             }
         }
 
         private void SaveConfig()
         {
-            var configJson = JsonSerializer.Serialize(_config, _serializerOptions);
-            Directory.CreateDirectory(ConfigFileDir);
-            File.WriteAllText(ConfigFilePath, configJson);
+            try
+            {
+                var configJson = JsonSerializer.Serialize(_config, _serializerOptions);
+                Directory.CreateDirectory(ConfigFileDir);
+                File.WriteAllText(ConfigFilePath, configJson);
+            }
+            catch
+            {
+            }
         }
 
         public bool PreReleaseChecked
@@ -61,14 +70,9 @@ namespace IntelOrca.OpenLauncher.Core
         }
     }
 
-
     internal struct Config
     {
-        public Config()
-        {
-        }
-        
-        public bool PreReleaseChecked { get; set; } = false;
-        public int SelectingGame { get; set; } = 0;
+        public bool PreReleaseChecked { get; set; }
+        public int SelectingGame { get; set; }
     }
 }

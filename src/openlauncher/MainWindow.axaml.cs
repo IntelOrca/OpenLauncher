@@ -16,6 +16,7 @@ namespace openlauncher
     public partial class MainWindow : Window
     {
         private readonly BuildService _buildService = new();
+        private readonly ConfigService _configService = new();
 
         private GameMenuItem? _selectedMenuItem;
         private bool _ready;
@@ -41,7 +42,8 @@ namespace openlauncher
 
         private async void Window_Opened(object sender, EventArgs e)
         {
-            gameListView.SelectedIndex = 0;
+            showPreReleaseCheckbox.IsChecked = _configService.PreReleaseChecked;
+            gameListView.SelectedIndex = _configService.SelectingGame;
             _ready = true;
             var selectedItem = gameListView.SelectedItem as GameMenuItem;
             await SetPageAsync(selectedItem);
@@ -54,9 +56,6 @@ namespace openlauncher
 
         private async Task SetPageAsync(GameMenuItem? item)
         {
-            if (!_ready)
-                return;
-
             _selectedMenuItem = item;
             if (item != null)
             {
@@ -89,11 +88,17 @@ namespace openlauncher
 
         private async void gameListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!_ready)
+                return;
+            _configService.SelectingGame = gameListView.SelectedIndex;
             await SetPageAsync(gameListView.SelectedItem as GameMenuItem);
         }
 
         private async void showPreReleaseCheckbox_Changed(object sender, RoutedEventArgs e)
         {
+            if (!_ready)
+                return;
+            _configService.PreReleaseChecked = showPreReleaseCheckbox.IsChecked ?? false;
             await RefreshAvailableVersionsAsync();
         }
 

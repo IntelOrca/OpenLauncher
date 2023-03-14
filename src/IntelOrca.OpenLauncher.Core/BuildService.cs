@@ -37,13 +37,30 @@ namespace IntelOrca.OpenLauncher.Core
             var builds = ImmutableArray.CreateBuilder<Build>(initialCapacity: releases.Count);
             foreach (var release in releases)
             {
-                var assets = release.Assets
-                    .Select(x => new BuildAsset(x.Name, new Uri(x.BrowserDownloadUrl), x.ContentType, x.Size))
-                    .ToImmutableArray();
-                var build = new Build(isRelease, release.PublishedAt?.DateTime ?? DateTime.MinValue, release.TagName, assets);
-                builds.Add(build);
+                builds.Add(GetBuild(release, isRelease));
+            }
+            var latestBuild = await GetLatestBuildAsync(repo, isRelease);
+            if (latestBuild != null && !builds.Any(x => x.Version == latestBuild.Version))
+            {
+                builds.Capacity++;
+                builds.Add(latestBuild);
             }
             return builds.MoveToImmutable();
         }
+
+        public async Task<Build> GetLatestBuildAsync(RepositoryName repo, bool isRelease)
+        {
+            var release = await _gitHubClient.Repository.Release.GetLatest(repo.Owner, repo.Name)
+                .ConfigureAwait(false);
+            return GetBuild(release, isRelease);
+        }
+
+        private static Build GetBuild(Release release, bool isRelease) =>
+            new Build(isRelease, release.PublishedAt?.DateTime ?? DateTime.MinValue, release.TagName, GetAssets(release));
+
+        private static ImmutableArray<BuildAsset> GetAssets(Release release) =>
+            release.Assets
+                .Select(x => new BuildAsset(x.Name, new Uri(x.BrowserDownloadUrl), x.ContentType, x.Size))
+                .ToImmutableArray();
     }
 }

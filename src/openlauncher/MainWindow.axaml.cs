@@ -73,16 +73,22 @@ namespace openlauncher
 
         private async Task DoUpdateCheck()
         {
-            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            if (version == null)
-                return;
-
-            var updateService = new UpdateService();
-            var checkResult = await updateService.CheckUpdateAsync(_buildService, version);
-            if (checkResult != null && checkResult.UpdateAvailable)
+            try
             {
-                updateBoxContainer.Opacity = 1;
-                _updateCheckResult = checkResult;
+                var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                if (version == null)
+                    return;
+
+                var updateService = new UpdateService();
+                var checkResult = await updateService.CheckUpdateAsync(_buildService, version);
+                if (checkResult != null && checkResult.UpdateAvailable)
+                {
+                    updateBoxContainer.Opacity = 1;
+                    _updateCheckResult = checkResult;
+                }
+            }
+            catch
+            {
             }
         }
 

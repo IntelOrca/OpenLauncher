@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>Open Launcher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Geïnstalleerd:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Beschikbaar:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Onbekend)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Spelen</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Downloaden</value>
+  </data>
+  <data name="ShowPreReleaseVersions" xml:space="preserve">
+    <value>Laat pre-release versies zien</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Launcher update beschikbaar</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>Er is een nieuwe launcher update beschikbaar om te downloaden.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>Starten mislukt {0}</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>Mislukt om de build te downloaden</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>één minuut geleden</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>{0} minuten geleden</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>één uur geleden</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>{0} uren geleden</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>één dag geleden</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>{0} dag geleden</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>één maand geleden</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>{0} maanden geleden</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>één jaar geleden</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>{0} jaren geleden</value>
+  </data>
+</root>

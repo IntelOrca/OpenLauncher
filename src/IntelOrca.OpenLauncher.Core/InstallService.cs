@@ -71,8 +71,7 @@ namespace IntelOrca.OpenLauncher.Core
             {
                 var psi = new ProcessStartInfo(ExecutablePath)
                 {
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
+                    RedirectStandardError = true
                 };
                 var process = Process.Start(psi);
                 var outputBuilder = new StringBuilder();

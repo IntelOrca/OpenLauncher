@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>Open Launcher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Installée:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Disponible:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Inconnu)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Jouer</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="ShowPreReleaseVersions" xml:space="preserve">
+    <value>Montrer les versions instables</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Mise à jour du Launcher disponible</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>Une nouvelle mise à jour du launcher est disponible au téléchargement.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>Erreur lors du lancement : {0}</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>Impossible de télécharger la version</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>il y'a une minute</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>il y'a {0} minutes</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>il y'a une heure</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>il y'a {0} heures</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>il y'a un jour</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>il y'a {0} jours</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>il y'a un mois</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>il y'a {0} mois</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>il y'a un an</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>il y'a {0} ans</value>
+  </data>
+</root>

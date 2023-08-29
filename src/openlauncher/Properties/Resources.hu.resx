@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>Open Launcher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Telepítve:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Elérhető:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Ismeretlen)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Játék</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Letöltés</value>
+  </data>
+  <data name="ShowPreReleaseVersions" xml:space="preserve">
+    <value>Mutassa a kiadás előtti verziókat</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Frissítés</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Launcher frissítés elérhető</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>Egy új launcher frissítés tölhető le.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>Nem sikerült elindítani {0}</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>Nem sikerült letölteni a kiadást</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>egy perce</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>{0} perce</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>egy órája</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>{0} órája</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>egy napja</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>{0} napja</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>egy hónapja</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>{0} hónapja</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>egy éve</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>{0} éve</value>
+  </data>
+</root>

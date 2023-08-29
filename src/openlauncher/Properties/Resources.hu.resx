@@ -28,7 +28,7 @@
     <value>Launcher frissítés elérhető</value>
   </data>
   <data name="LauncherUpdateMessage" xml:space="preserve">
-    <value>Egy új launcher frissítés tölhető le.</value>
+    <value>Egy új launcher frissítés tölthető le.</value>
   </data>
   <data name="FailedToLaunchGame" xml:space="preserve">
     <value>Nem sikerült elindítani {0}</value>

@@ -31,7 +31,7 @@
     <value>Egy új launcher frissítés tölthető le.</value>
   </data>
   <data name="FailedToLaunchGame" xml:space="preserve">
-    <value>Nem sikerült elindítani {0}</value>
+    <value>Nem sikerült elindítani: {0}</value>
   </data>
   <data name="DownloadBuildFailedTitle" xml:space="preserve">
     <value>Nem sikerült letölteni a kiadást</value>

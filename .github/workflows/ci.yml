@@ -11,6 +11,10 @@ jobs:
           rid: linux-x64
         - os: windows
           rid: win-x64
+        - os: macos
+          rid: osx-x64
+        - os: macos
+          rid: osx-arm64
 
     runs-on: ${{ matrix.os }}-latest
     steps:

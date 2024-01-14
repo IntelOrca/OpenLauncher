@@ -1,5 +1,7 @@
 name: CI
 on: [push, pull_request]
+env:
+  dotnet-version: '7.0'
 jobs:
   build:
     name: Build OpenLauncher
@@ -17,9 +19,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: ${{ env.dotnet-version }}
     - name: Restore
       run: dotnet restore
     - name: Build
@@ -30,14 +32,80 @@ jobs:
       working-directory: src/openlauncher
       run: dotnet publish -c Release -r ${{ matrix.rid }} --self-contained
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: "OpenLauncher-${{ matrix.rid }}"
-        path: src/openlauncher/bin/Release/net7.0/${{ matrix.rid }}/publish/**/*
-    - name: Create release
-      uses: softprops/action-gh-release@v1
+        path: src/openlauncher/bin/Release/net${{ env.dotnet-version }}/${{ matrix.rid }}/publish/**/*
+         
+  package:
+      name: deb and rpm packaging
+      runs-on: ubuntu-latest
+      needs: [build]
       if: startsWith(github.ref, 'refs/tags/v')
-      with:
-        files: |
-          src/openlauncher/bin/Release/net7.0/${{ matrix.rid }}/publish/openlauncher
-          src/openlauncher/bin/Release/net7.0/${{ matrix.rid }}/publish/openlauncher.exe
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.dotnet-version }}
+      - name: Restore
+        run: dotnet restore
+      - name: Publish
+        working-directory: src/openlauncher
+        run: dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true -p:SelfContained=false -p UseAppHost=true -p:EnableCompressionInSingleFile=false # Build to use OS runtime, has to be architecture dependent per documentation :(
+      - name: Prepare to create deb and rpm files
+        run: |
+          mkdir -p .pkg/usr/bin
+          mkdir -p .pkg/usr/share/applications
+          mkdir -p .pkg/usr/share/icons
+          cp src/openlauncher/resources/logo.svg .pkg/usr/share/icons/openlauncher.svg
+          cp src/openlauncher/resources/OpenLauncher.desktop .pkg/usr/share/applications/OpenLauncher.desktop
+          cp src/openlauncher/bin/Release/net${{ env.dotnet-version }}/linux-x64/publish/openlauncher .pkg/usr/bin/openlauncher
+          chmod +x .pkg/usr/bin/openlauncher
+      - name: Create rpm
+        uses: jiro4989/build-rpm-action@v2
+        with:
+              package: openlauncher
+              summary: 'A launcher for automatically downloading the latest, or specific versions of OpenRCT2 and OpenLoco.'
+              package_root: .pkg
+              maintainer: Ted John
+              version: ${{github.ref_name}} # refs/tags/v*.*.*
+              arch: 'x86_64'
+              license: 'MIT'
+              requires: dotnet-runtime-${{ env.dotnet-version }}
+      - name: Create deb
+        uses: jiro4989/build-deb-action@v3
+        with:
+              package: openlauncher
+              package_root: .pkg
+              maintainer: Ted John
+              version: ${{github.ref_name}} # refs/tags/v*.*.*
+              arch: 'amd64'
+              desc: 'A launcher for automatically downloading the latest, or specific versions of OpenRCT2 and OpenLoco.'
+              depends: dotnet-runtime-${{ env.dotnet-version }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact-deb-rpm
+          path: |
+            ./*.deb
+            ./*.rpm
+            !./*-debuginfo-*.rpm
+
+  release:
+      name: Create release
+      runs-on: ubuntu-latest
+      needs: [build, package]
+      steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: artifacts/
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            # List to exclude pdb
+            artifacts/openlauncher
+            artifacts/openlauncher*.exe
+            artifacts/openlauncher*.rpm
+            artifacts/openlauncher*.deb

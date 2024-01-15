@@ -1,69 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <data name="OpenLauncher" xml:space="preserve">
-    <value>Open Launcher</value>
+    <value>오픈 런처</value>
   </data>
   <data name="InstalledLabel" xml:space="preserve">
-    <value>Installed:</value>
+    <value>설치됨:</value>
   </data>
   <data name="AvailableLabel" xml:space="preserve">
-    <value>Available:</value>
+    <value>사용 가능:</value>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>(Unknown)</value>
+    <value>(알 수 없음)</value>
   </data>
   <data name="Play" xml:space="preserve">
-    <value>Play</value>
+    <value>플레이</value>
   </data>
   <data name="Download" xml:space="preserve">
-    <value>Download</value>
+    <value>다운로드</value>
   </data>
   <data name="ShowPreReleaseVersions" xml:space="preserve">
-    <value>Show pre-release versions</value>
+    <value>사전 공개 버전 보기</value>
   </data>
   <data name="Update" xml:space="preserve">
-    <value>Update</value>
+    <value>업데이트</value>
   </data>
   <data name="LauncherUpdateTitle" xml:space="preserve">
-    <value>Launcher update available</value>
+    <value>런처 업데이트 가능</value>
   </data>
   <data name="LauncherUpdateMessage" xml:space="preserve">
-    <value>A new launcher update is available to download.</value>
+    <value>새 런처 업데이트를 다운로드할 수 있습니다.</value>
   </data>
   <data name="FailedToLaunchGame" xml:space="preserve">
-    <value>Failed to launch {0}</value>
+    <value>{0} 실행에 실패하였습니다</value>
   </data>
   <data name="DownloadBuildFailedTitle" xml:space="preserve">
-    <value>Failed to download build</value>
+    <value>빌드 다운로드에 실패하였습니다</value>
   </data>
   <data name="Minute" xml:space="preserve">
-    <value>a minute ago</value>
+    <value>1분 전</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>{0} minutes ago</value>
+    <value>{0}분 전</value>
   </data>
   <data name="Hour" xml:space="preserve">
-    <value>an hour ago</value>
+    <value>1시간 전</value>
   </data>
   <data name="Hours" xml:space="preserve">
-    <value>{0} hours ago</value>
+    <value>{0}시간 전</value>
   </data>
   <data name="Day" xml:space="preserve">
-    <value>a day ago</value>
+    <value>1일 전</value>
   </data>
   <data name="Days" xml:space="preserve">
-    <value>{0} days ago</value>
+    <value>{0}일 전</value>
   </data>
   <data name="Month" xml:space="preserve">
-    <value>a month ago</value>
+    <value>1개월 전</value>
   </data>
   <data name="Months" xml:space="preserve">
-    <value>{0} months ago</value>
+    <value>{0}개월 전</value>
   </data>
   <data name="Year" xml:space="preserve">
-    <value>a year ago</value>
+    <value>1년 전</value>
   </data>
   <data name="Years" xml:space="preserve">
-    <value>{0} years ago</value>
+    <value>{0}년 전</value>
   </data>
 </root>

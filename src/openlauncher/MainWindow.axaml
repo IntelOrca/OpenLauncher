@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Class="openlauncher.MainWindow"
         Title="{x:Static p:Resources.OpenLauncher}"
-        CanResize="False"
+        CanResize="True"
         SizeToContent="Height"
         Width="800"
         WindowStartupLocation="CenterScreen"

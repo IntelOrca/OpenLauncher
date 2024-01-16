@@ -9,6 +9,8 @@
         Title="{x:Static p:Resources.OpenLauncher}"
         CanResize="True"
         SizeToContent="Height"
+        MinWidth="500"
+        MinHeight="200"
         Width="800"
         WindowStartupLocation="CenterScreen"
         Icon="/resources/logo.ico"

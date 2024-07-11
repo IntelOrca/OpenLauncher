@@ -7,10 +7,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: ubuntu
-          rid: linux-x64
-        - os: windows
-          rid: win-x64
+        - os: macos
+          rid: osx-arm64
 
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -41,3 +39,4 @@ jobs:
         files: |
           src/openlauncher/bin/Release/net7.0/${{ matrix.rid }}/publish/openlauncher
           src/openlauncher/bin/Release/net7.0/${{ matrix.rid }}/publish/openlauncher.exe
+          

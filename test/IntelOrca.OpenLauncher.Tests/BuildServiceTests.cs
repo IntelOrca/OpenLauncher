@@ -8,18 +8,22 @@ namespace IntelOrca.OpenLauncher.Tests
 {
     public class BuildServiceTests
     {
-        [Fact]
-        public async Task GetBuildsAsync_OpenLoco_v22_05_1()
+        [Theory]
+        [InlineData("macos", "v22.05.1", 4157592, "2022-05-17T20:06:15Z")]
+        public async Task GetBuildsAsync_OpenLoco_v22_05_1(string system, string version, int size, string publishtime)
         {
             var buildService = new BuildService();
             var builds = await buildService.GetBuildsAsync(Game.OpenLoco, includeDevelop: false);
-            var build = builds.First(x => x.Version == "v22.05.1");
-            Assert.Equal("v22.05.1", build.Version);
-            Assert.Equal(new DateTime(2022, 5, 17, 20, 6, 15), build.PublishedAt);
-            Assert.Equal("OpenLoco-v22.05.1-macos.zip", build.Assets[0].Name);
-            Assert.Equal(new Uri("https://github.com/OpenLoco/OpenLoco/releases/download/v22.05.1/OpenLoco-v22.05.1-macos.zip"), build.Assets[0].Uri);
-            Assert.Equal("application/x-zip-compressed", build.Assets[0].ContentType);
-            Assert.Equal(4157592, build.Assets[0].Size);
+            var build = builds.First(x => x.Version == version && x.Assets.Any(t => IsMatchingSystemAsset(system, t)));
+
+            Assert.Equal(version, build.Version);
+            Assert.Equal(DateTime.Parse(publishtime).ToUniversalTime(), build.PublishedAt);
+            Assert.Equal($"OpenLoco-{version}-{system}.zip", build.Assets.Where(t => IsMatchingSystemAsset(system, t)).First().Name);
+            Assert.Equal(new Uri($"https://github.com/OpenLoco/OpenLoco/releases/download/{version}/OpenLoco-{version}-{system}.zip"), build.Assets.Where(t => t.Uri.AbsoluteUri.Contains("macos.zip")).First().Uri);
+            Assert.Equal("application/x-zip-compressed", build.Assets.Where(t => IsMatchingSystemAsset(system, t)).First().ContentType);
+            Assert.Equal(size, build.Assets.Where(t => IsMatchingSystemAsset(system, t)).First().Size);
         }
+
+        private static bool IsMatchingSystemAsset(string system, BuildAsset t) => t.Uri.AbsoluteUri.Contains($"{system}.zip");
     }
 }

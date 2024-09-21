@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/openlauncher/bin/Debug/net7.0/openlauncher.dll",
+            "program": "${workspaceFolder}/src/openlauncher/bin/Debug/net8.0/openlauncher.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

@@ -33,16 +33,20 @@ namespace IntelOrca.OpenLauncher.Core
 
         public override string ToString() => Version;
 
-        public int CompareTo(Build other)
+        public int CompareTo(Build? other)
         {
+            ArgumentNullException.ThrowIfNull(other);
+
             var a = PublishedAt;
             var b = other.PublishedAt;
+
             if (a is null && b is null)
                 return 0;
             if (a is null)
                 return 1;
             if (b is null)
                 return -1;
+
             return b.Value.CompareTo(a.Value);
         }
     }

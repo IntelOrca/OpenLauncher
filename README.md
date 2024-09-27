@@ -10,10 +10,10 @@ A launcher for automatically downloading the latest, or specific versions of [Op
 
 # 🔨 Building
 
-**Open Launcher** is written in C# using the [AvaloniaUI](http://avaloniaui.net) framework. The application currently targets [.NET 6](https://dotnet.microsoft.com) and is typically distributed as a self contained executable.
+**Open Launcher** is written in C# using the [AvaloniaUI](http://avaloniaui.net) framework. The application currently targets [.NET 8](https://dotnet.microsoft.com) and is typically distributed as a self contained executable.
 
 ### Prerequisites
-* [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 * [Visual Studio](https://visualstudio.microsoft.com) (optional)
   * [AvaloniaUI extension](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.AvaloniaVS) (optional)
 * [Visual Studio Code](https://code.visualstudio.com) (optional)

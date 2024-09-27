@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace IntelOrca.OpenLauncher.Core
 {
@@ -73,12 +74,15 @@ namespace IntelOrca.OpenLauncher.Core
                 {
                     RedirectStandardError = true
                 };
-                var process = Process.Start(psi);
+
+                var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start process '{psi}'");
+
                 var outputBuilder = new StringBuilder();
                 var sw = Stopwatch.StartNew();
+
                 while (sw.ElapsedMilliseconds < 2000)
                 {
-                    var s = process.StandardError.ReadToEnd();
+                    string? s = process.StandardError.ReadToEnd();
                     if (s != null)
                         outputBuilder.Append(s);
 

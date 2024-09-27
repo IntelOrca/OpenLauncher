@@ -117,8 +117,13 @@ namespace IntelOrca.OpenLauncher.Core
 
         public static BuildAssetComparer Default = new BuildAssetComparer();
 
-        public int Compare(BuildAsset x, BuildAsset y)
+        public int Compare(BuildAsset? x, BuildAsset? y)
         {
+            if (x == null || y == null)
+            {
+                throw new ArgumentNullException("BuildAsset objects cannot be null");
+            }
+
             if (x.Platform == y.Platform)
             {
                 if (x.Arch != y.Arch)

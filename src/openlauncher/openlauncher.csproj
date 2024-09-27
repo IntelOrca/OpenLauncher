@@ -19,6 +19,9 @@
     <ApplicationIcon>resources\logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+  <RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
+</ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

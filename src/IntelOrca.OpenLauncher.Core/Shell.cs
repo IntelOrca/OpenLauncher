@@ -25,7 +25,7 @@ namespace IntelOrca.OpenLauncher.Core
             {
                 psi.ArgumentList.Add(arg);
             }
-            var p = Process.Start(psi);
+            var p = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start process '{name}'");
             p.WaitForExit();
             return p.ExitCode;
         }

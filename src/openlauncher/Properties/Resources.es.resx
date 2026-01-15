@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>OpenLauncher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Instalado:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Disponible:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Desconocido)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Jugar</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Descargar</value>
+  </data>
+  <data name="ShowDevelopmentVersions" xml:space="preserve">
+    <value>Mostrar versiones de desarrollo</value>
+  </data>
+  <data name="AutoUpdateGame" xml:space="preserve">
+    <value>Instalar actualizaciones automáticamente</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Actualización de OpenLauncher disponible</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>Hay una nueva actualización de OpenLauncher disponible para descargar.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>Error al iniciar {0}</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>Error al descargar la build</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>hace un minuto</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>hace {0} minutos</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hace una hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hace {0} horas</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>hace un día</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>hace {0} días</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>hace un mes</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>hace {0} meses</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>hace un año</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>hace {0} años</value>
+  </data>
+  <data name="BuildListing" xml:space="preserve">
+    <value>{0} (publicado {1})</value>
+  </data>
+  <data name="StatusDownloading" xml:space="preserve">
+    <value>Descargando…</value>
+  </data>
+  <data name="StatusExtracting" xml:space="preserve">
+    <value>Extrayendo…</value>
+  </data> 
+</root>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -326,6 +327,17 @@ namespace openlauncher
             errorBox.Message = message;
         }
 
+        private void OpenDownloadPage()
+        {
+            const string uri = "https://openrct2.io/download/launcher";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                System.Diagnostics.Process.Start(uri);
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                System.Diagnostics.Process.Start("open", uri);
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                System.Diagnostics.Process.Start("xdg-open", uri);
+        }
+
         private async void update_Click(object sender, RoutedEventArgs e)
         {
             if (_updateCheckResult == null)
@@ -334,7 +346,14 @@ namespace openlauncher
             var processPath = Environment.ProcessPath;
             if (processPath == null)
             {
-                ShowError("Launcher update failed", "Unable to obtain path to running process.");
+                OpenDownloadPage();
+                return;
+            }
+            
+            FileAttributes fileAttributes = File.GetAttributes(processPath);
+            if ((fileAttributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            {
+                OpenDownloadPage();
                 return;
             }
 

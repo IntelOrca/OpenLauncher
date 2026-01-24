@@ -30,7 +30,7 @@ namespace IntelOrca.OpenLauncher.Core
             {
                 StartPage = 1,
                 PageCount = 1,
-                PageSize = 50
+                PageSize = 75
             };
             var releases = await _gitHubClient.Repository.Release.GetAll(repo.Owner, repo.Name, apiOptions)
                 .ConfigureAwait(false);

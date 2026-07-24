@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="OpenLauncher" xml:space="preserve">
+    <value>OpenLauncher</value>
+  </data>
+  <data name="InstalledLabel" xml:space="preserve">
+    <value>Instal·lada:</value>
+  </data>
+  <data name="AvailableLabel" xml:space="preserve">
+    <value>Disponible:</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(Desconeguda)</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Juga</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Descarrega</value>
+  </data>
+  <data name="ShowDevelopmentVersions" xml:space="preserve">
+    <value>Mostra les versions en desenvolupament</value>
+  </data>
+  <data name="AutoUpdateGame" xml:space="preserve">
+    <value>Instal·la les actualitzacions automàticament</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualitza</value>
+  </data>
+  <data name="LauncherUpdateTitle" xml:space="preserve">
+    <value>Actualització del llançador disponible</value>
+  </data>
+  <data name="LauncherUpdateMessage" xml:space="preserve">
+    <value>Hi ha una actualització del llançador disponible per a descarregar.</value>
+  </data>
+  <data name="FailedToLaunchGame" xml:space="preserve">
+    <value>{0} no s’ha pogut executar.</value>
+  </data>
+  <data name="DownloadBuildFailedTitle" xml:space="preserve">
+    <value>El muntatge no s’ha pogut descarregar.</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>fa un minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>fa {0} minuts</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>fa una hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>fa {0} hores</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>fa un dia</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>fa {0} dies</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>fa un mes</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>fa {0} mesos</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>fa un any</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>fa {0} anys</value>
+  </data>
+  <data name="BuildListing" xml:space="preserve">
+    <value>{0} (publicada {1})</value>
+  </data>
+  <data name="StatusDownloading" xml:space="preserve">
+    <value>Es descarrega…</value>
+  </data>
+  <data name="StatusExtracting" xml:space="preserve">
+    <value>S’extrau…</value>
+  </data> 
+</root>

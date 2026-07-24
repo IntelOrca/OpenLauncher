@@ -11,6 +11,7 @@ Name=OpenLauncher
 
 # A comment which can/will be used as a tooltip
 Comment=A launcher for automatically downloading the latest, or specific versions of OpenRCT2 and OpenLoco.
+Comment[ca]=Un llançador que descarrega i instal·la automàticament les versions més noves, o específiques, de l’OpenRCT2 i l’OpenLoco.
 
 # The path to the folder in which the executable is run
 Path=/usr/bin

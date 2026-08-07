@@ -40,6 +40,30 @@ namespace IntelOrca.OpenLauncher.Core
 
         public bool DirectoryExists(string path) => Directory.Exists(path);
 
+        public void ExtractMacArchive(string archivePath, string outDirectory)
+        {
+            var exitCode = RunProcess("/usr/bin/ditto", "-k", "-x", archivePath, outDirectory);
+            if (exitCode != 0)
+            {
+                throw new Exception($"ditto operation failed, exit code = {exitCode}");
+            }
+        }
+
+        public bool CanWriteToDirectory(string path)
+        {
+            try
+            {
+                var probePath = Path.Combine(path, $".openlauncher-{Guid.NewGuid():N}");
+                Directory.CreateDirectory(probePath);
+                Directory.Delete(probePath);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public string[] GetFileSystemEntries(string path) => Directory.GetFileSystemEntries(path);
 
         public void MoveDirectory(string src, string dst) => Directory.Move(src, dst);

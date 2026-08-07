@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -343,15 +342,10 @@ namespace openlauncher
             if (_updateCheckResult == null)
                 return;
 
+            var shell = new Shell();
+            var updateService = new UpdateService();
             var processPath = Environment.ProcessPath;
-            if (processPath == null)
-            {
-                OpenDownloadPage();
-                return;
-            }
-            
-            FileAttributes fileAttributes = File.GetAttributes(processPath);
-            if ((fileAttributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            if (processPath == null || !updateService.CanUpdateInPlace(shell, processPath))
             {
                 OpenDownloadPage();
                 return;
@@ -369,10 +363,9 @@ namespace openlauncher
                     });
                 });
 
-                var updateService = new UpdateService();
                 await updateService.DownloadAndUpdateAsync(
                     new DownloadService(),
-                    new Shell(),
+                    shell,
                     processPath,
                     _updateCheckResult.DownloadUri,
                     progress,

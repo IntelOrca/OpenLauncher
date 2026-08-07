@@ -1,5 +1,5 @@
 #!/bin/bash
-#Modified from Avalonia's documentation: https://docs.avaloniaui.net/docs/0.10.x/distribution-publishing/macos
+#Modified from Avalonia's documentation: https://docs.avaloniaui.net/docs/deployment/macos
 
 set -e
 trap 'echo "Error packaging app"; exit 1' ERR

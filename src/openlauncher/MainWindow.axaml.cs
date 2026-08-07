@@ -40,9 +40,9 @@ namespace openlauncher
             var openRCT2Game = new GameMenuItem(Game.OpenRCT2, "avares://openlauncher/resources/icon-openrct2.png");
             var openLocoGame = new GameMenuItem(Game.OpenLoco, "avares://openlauncher/resources/icon-openloco.png");
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-                gameListView.Items = new [] {openRCT2Game, openLocoGame};
+                gameListView.ItemsSource = new [] {openRCT2Game, openLocoGame};
             } else {
-                gameListView.Items = new [] {openRCT2Game};
+                gameListView.ItemsSource = new [] {openRCT2Game};
             }
         }
 
@@ -266,7 +266,7 @@ namespace openlauncher
             try
             {
                 // Clear list
-                versionDropdown.Items = new ComboBoxItem[0];
+                versionDropdown.ItemsSource = Array.Empty<ComboBoxItem>();
                 versionDropdown.IsHitTestVisible = false;
 
                 // Refresh builds
@@ -296,7 +296,7 @@ namespace openlauncher
                 }
                 if (items.Count != 0)
                 {
-                    versionDropdown.Items = items;
+                    versionDropdown.ItemsSource = items;
                     versionDropdown.SelectedIndex = 0;
                     if (!_isBusy)
                     {
@@ -391,7 +391,7 @@ namespace openlauncher
 
         private void SetAllInteractionEnabled(bool value)
         {
-            var buildsAvailable = versionDropdown.Items.GetEnumerator().MoveNext();
+            var buildsAvailable = versionDropdown.ItemCount != 0;
 
             _isBusy = !value;
             gameListView.IsEnabled = value;

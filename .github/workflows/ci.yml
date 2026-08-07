@@ -21,7 +21,12 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '8.0.x'
+        # Avalonia 12's source generators require the .NET 9+ SDK to run, even
+        # though the app itself still targets net8.0. The 8.0 runtime is kept
+        # so the net8.0 output can be tested and run.
+        dotnet-version: |
+          8.0.x
+          9.0.x
     - name: Restore
       run: dotnet restore
     - name: Build
@@ -58,7 +63,10 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '8.0.x'
+          # See note above: Avalonia 12 needs the .NET 9+ SDK to build.
+          dotnet-version: |
+            8.0.x
+            9.0.x
       - name: Restore
         run: dotnet restore
       - name: Publish

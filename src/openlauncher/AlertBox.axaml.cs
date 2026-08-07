@@ -26,18 +26,30 @@ namespace openlauncher
             OnKindUpdate();
         }
 
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+            if (change.Property == KindProperty)
+            {
+                OnKindUpdate();
+            }
+        }
+
         private void OnKindUpdate()
         {
             if (!_loaded)
                 return;
 
             var iconControl = this.FindControl<PathIcon>("icon");
+            if (iconControl == null)
+                return;
+
             switch (Kind)
             {
                 case AlertKind.Error:
                 {
                     Background = new SolidColorBrush(0xFFFFCCCC);
-                    if (Resources.TryGetResource("error_circle_regular", out var resource))
+                    if (Resources.TryGetResource("error_circle_regular", ActualThemeVariant, out var resource))
                     {
                         iconControl.Data = resource as Geometry;
                     }
@@ -46,7 +58,7 @@ namespace openlauncher
                 case AlertKind.Warning:
                 {
                     Background = new SolidColorBrush(0xFFFFFFCC);
-                    if (Resources.TryGetResource("warning_regular", out var resource))
+                    if (Resources.TryGetResource("warning_regular", ActualThemeVariant, out var resource))
                     {
                         iconControl.Data = resource as Geometry;
                     }
@@ -56,11 +68,7 @@ namespace openlauncher
         }
 
         public static readonly StyledProperty<AlertKind> KindProperty =
-            AvaloniaProperty.Register<AlertBox, AlertKind>(nameof(Kind), notifying: (o, e) =>
-            {
-                if (!e)
-                    (o as AlertBox)?.OnKindUpdate();
-            });
+            AvaloniaProperty.Register<AlertBox, AlertKind>(nameof(Kind));
 
         public AlertKind Kind
         {

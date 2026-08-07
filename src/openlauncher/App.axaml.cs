@@ -26,8 +26,7 @@ namespace openlauncher
 
         internal static Bitmap GetImage(string path)
         {
-            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-            return new Bitmap(assets!.Open(new Uri(path)));
+            return new Bitmap(AssetLoader.Open(new Uri(path)));
         }
     }
 }

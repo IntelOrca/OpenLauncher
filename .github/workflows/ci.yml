@@ -17,9 +17,9 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '8.0.x'
     - name: Restore
@@ -41,7 +41,7 @@ jobs:
       if: runner.os == 'macOS'
       run: ./package-mac.sh
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: OpenLauncher-${{ matrix.rid }}
         path: src/openlauncher/bin/Release/net8.0/${{ matrix.rid }}/publish/**/*
@@ -54,9 +54,9 @@ jobs:
       needs: [build]
       steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
       - name: Restore
@@ -85,7 +85,7 @@ jobs:
               license: 'MIT'
               requires: dotnet-runtime-8.0
       - name: Create deb
-        uses: jiro4989/build-deb-action@v3
+        uses: jiro4989/build-deb-action@v4
         with:
               package: openlauncher
               package_root: .pkg
@@ -94,7 +94,7 @@ jobs:
               arch: 'amd64'
               desc: 'A launcher for automatically downloading the latest, or specific versions of OpenRCT2 and OpenLoco.'
               depends: dotnet-runtime-8.0
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: artifact-deb-rpm
           path: |
@@ -107,11 +107,11 @@ jobs:
       runs-on: ubuntu-latest
       needs: [build, package]
       steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           merge-multiple: true
           path: artifacts/
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: |
             # List to exclude pdb

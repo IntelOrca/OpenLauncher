@@ -5,8 +5,8 @@ set -e
 trap 'echo "Error packaging app"; exit 1' ERR
 
 PROJECT_NAME="openlauncher"
-OUTPUT_DIR="./src/openlauncher/bin/Release/net8.0"
-FINAL_OUTPUT_DIR="./src/openlauncher/bin/Release/net8.0/macos-universal"
+OUTPUT_DIR="./src/openlauncher/bin/Release/net10.0"
+FINAL_OUTPUT_DIR="./src/openlauncher/bin/Release/net10.0/macos-universal"
 
 # Function to build for a specific architecture
 build_for_arch() {

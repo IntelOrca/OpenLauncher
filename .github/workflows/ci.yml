@@ -21,12 +21,7 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v6
       with:
-        # Avalonia 12's source generators require the .NET 9+ SDK to run, even
-        # though the app itself still targets net8.0. The 8.0 runtime is kept
-        # so the net8.0 output can be tested and run.
-        dotnet-version: |
-          8.0.x
-          9.0.x
+        dotnet-version: '10.0.x'
     - name: Restore
       run: dotnet restore
     - name: Build
@@ -49,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: OpenLauncher-${{ matrix.rid }}
-        path: src/openlauncher/bin/Release/net8.0/${{ matrix.rid }}/publish/**/*
+        path: src/openlauncher/bin/Release/net10.0/${{ matrix.rid }}/publish/**/*
         if-no-files-found: error
          
   package:
@@ -63,10 +58,7 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v6
         with:
-          # See note above: Avalonia 12 needs the .NET 9+ SDK to build.
-          dotnet-version: |
-            8.0.x
-            9.0.x
+          dotnet-version: '10.0.x'
       - name: Restore
         run: dotnet restore
       - name: Publish
@@ -79,7 +71,7 @@ jobs:
           mkdir -p .pkg/usr/share/icons
           cp src/openlauncher/resources/logo.svg .pkg/usr/share/icons/openlauncher.svg
           cp src/openlauncher/resources/OpenLauncher.desktop .pkg/usr/share/applications/OpenLauncher.desktop
-          cp src/openlauncher/bin/Release/net8.0/linux-x64/publish/openlauncher .pkg/usr/bin/openlauncher
+          cp src/openlauncher/bin/Release/net10.0/linux-x64/publish/openlauncher .pkg/usr/bin/openlauncher
           chmod +x .pkg/usr/bin/openlauncher
       - name: Create rpm
         uses: jiro4989/build-rpm-action@v2
@@ -91,7 +83,7 @@ jobs:
               version: ${{github.ref_name}} # refs/tags/v*.*.*
               arch: 'x86_64'
               license: 'MIT'
-              requires: dotnet-runtime-8.0
+              requires: dotnet-runtime-10.0
       - name: Create deb
         uses: jiro4989/build-deb-action@v4
         with:
@@ -101,7 +93,7 @@ jobs:
               version: ${{github.ref_name}} # refs/tags/v*.*.*
               arch: 'amd64'
               desc: 'A launcher for automatically downloading the latest, or specific versions of OpenRCT2 and OpenLoco.'
-              depends: dotnet-runtime-8.0
+              depends: dotnet-runtime-10.0
       - uses: actions/upload-artifact@v7
         with:
           name: artifact-deb-rpm

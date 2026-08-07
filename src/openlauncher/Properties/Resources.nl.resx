@@ -31,7 +31,7 @@
     <value>Launcher-update beschikbaar</value>
   </data>
   <data name="LauncherUpdateMessage" xml:space="preserve">
-    <value>Er is update voor de launcher beschikbaar.</value>
+    <value>Er is een update voor de launcher beschikbaar.</value>
   </data>
   <data name="FailedToLaunchGame" xml:space="preserve">
     <value>Starten van ‘{0}’ is mislukt.</value>

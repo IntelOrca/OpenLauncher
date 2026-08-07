@@ -64,7 +64,18 @@ namespace IntelOrca.OpenLauncher.Core
         {
             try
             {
-                return File.Exists(ExecutablePath);
+                var path = ExecutablePath;
+                if (!File.Exists(path))
+                    return false;
+
+                // A half extracted archive can leave the file in place without its executable bit,
+                // in which case launching it only fails once the user presses play
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    return true;
+
+                const UnixFileMode executeBits =
+                    UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
+                return (File.GetUnixFileMode(path) & executeBits) != 0;
             }
             catch
             {
@@ -169,7 +180,7 @@ namespace IntelOrca.OpenLauncher.Core
             if (uri.LocalPath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-                    ExtractArchiveMac(archivePath, outDirectory);
+                    shell.ExtractMacArchive(archivePath, outDirectory);
                 } else {
                     ZipFile.ExtractToDirectory(archivePath, outDirectory, overwriteFiles: true);
                 }
@@ -205,14 +216,6 @@ namespace IntelOrca.OpenLauncher.Core
             {
                 throw new Exception("Unknown file format to extract.");
             }
-        }
-
-        private void ExtractArchiveMac(string archivePath, string outDirectory) {
-            var dittoProcess = new Process();
-            var args = $"-k -x \"{archivePath}\" \"{outDirectory}\"";
-            dittoProcess.StartInfo = new ProcessStartInfo("/usr/bin/ditto", args);
-            dittoProcess.Start();
-            dittoProcess.WaitForExit();
         }
     }
 }

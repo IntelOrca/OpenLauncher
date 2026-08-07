@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,6 +40,13 @@ namespace IntelOrca.OpenLauncher.Core
             IProgress<DownloadProgressReport> progress,
             CancellationToken ct)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                await DownloadAndUpdateMacAsync(downloadService, shell, processPath, uri, progress, ct)
+                    .ConfigureAwait(false);
+                return;
+            }
+
             var currentBinaryTempPath = processPath + ".backup";
             try
             {
@@ -66,16 +73,102 @@ namespace IntelOrca.OpenLauncher.Core
             }
             shell.SetExecutable(processPath);
 
-            // Update successful, now we just need to launch the new process and quit this one
+            RestartAndExit(shell, processPath);
+        }
+
+        // On macOS the launcher is an .app bundle inside a zip archive, and processPath points at the
+        // executable a few directories inside it. The bundle has to be replaced as a whole, since the
+        // resources next to the executable change between versions.
+        private async Task DownloadAndUpdateMacAsync(
+            DownloadService downloadService,
+            Shell shell,
+            string processPath,
+            Uri uri,
+            IProgress<DownloadProgressReport> progress,
+            CancellationToken ct)
+        {
+            var bundlePath = GetAppBundlePath(processPath) ??
+                throw new Exception($"\"{processPath}\" is not inside an .app bundle.");
+
+            var downloadPath = await downloadService.DownloadFileAsync(uri, progress, ct).ConfigureAwait(false);
+
+            // Staged next to the bundle so that swapping them is a rename, not a copy across volumes
+            var extractPath = bundlePath + ".update";
+            var backupPath = bundlePath + ".backup";
             try
             {
-                shell.StartProcess(processPath);
+                // Either may have been left behind by a previous failed update
+                shell.DeleteDirectory(extractPath);
+                shell.DeleteDirectory(backupPath);
+                shell.ExtractMacArchive(downloadPath, extractPath);
+
+                var newBundlePath = shell.GetFileSystemEntries(extractPath)
+                    .FirstOrDefault(x => x.EndsWith(".app", StringComparison.OrdinalIgnoreCase)) ??
+                    throw new Exception("Update archive did not contain an .app bundle.");
+
+                // Keep the old bundle around until the new one is in place
+                shell.MoveDirectory(bundlePath, backupPath);
+                try
+                {
+                    shell.MoveDirectory(newBundlePath, bundlePath);
+                }
+                catch
+                {
+                    shell.MoveDirectory(backupPath, bundlePath);
+                    throw new Exception("Unable to move updated bundle to current launcher location.");
+                }
+                shell.DeleteDirectory(backupPath);
+            }
+            finally
+            {
+                shell.DeleteDirectory(extractPath);
+                shell.TryDeleteFile(downloadPath);
+            }
+
+            // -n forces a new instance, as this one is still running until RestartAndExit exits it
+            RestartAndExit(shell, "/usr/bin/open", "-n", bundlePath);
+        }
+
+        // Whether an update can overwrite what it needs to: the directory holding the .app bundle on
+        // macOS, the launcher binary itself elsewhere.
+        public bool CanUpdateInPlace(Shell shell, string processPath)
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    var bundleParent = Path.GetDirectoryName(GetAppBundlePath(processPath));
+                    return bundleParent != null && shell.CanWriteToDirectory(bundleParent);
+                }
+                return !File.GetAttributes(processPath).HasFlag(FileAttributes.ReadOnly);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static void RestartAndExit(Shell shell, string path, params string[] args)
+        {
+            try
+            {
+                shell.StartProcess(path, args);
             }
             catch
             {
                 throw new Exception("Launcher updated, but failed to start");
             }
             Environment.Exit(0);
+        }
+
+        // "OpenLauncher.app/Contents/MacOS/openlauncher" to "OpenLauncher.app"
+        private static string? GetAppBundlePath(string processPath)
+        {
+            var contentsDirectory = Path.GetDirectoryName(Path.GetDirectoryName(processPath));
+            var bundleDirectory = Path.GetDirectoryName(contentsDirectory);
+            return bundleDirectory?.EndsWith(".app", StringComparison.OrdinalIgnoreCase) == true
+                ? bundleDirectory
+                : null;
         }
     }
 

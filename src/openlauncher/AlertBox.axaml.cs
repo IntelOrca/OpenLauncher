@@ -12,6 +12,7 @@ namespace openlauncher
         public AlertBox()
         {
             InitializeComponent();
+            ActualThemeVariantChanged += (_, _) => OnKindUpdate();
         }
 
         private void InitializeComponent()
@@ -26,41 +27,49 @@ namespace openlauncher
             OnKindUpdate();
         }
 
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+            if (change.Property == KindProperty)
+            {
+                OnKindUpdate();
+            }
+        }
+
         private void OnKindUpdate()
         {
             if (!_loaded)
                 return;
 
             var iconControl = this.FindControl<PathIcon>("icon");
+            if (iconControl == null)
+                return;
+
             switch (Kind)
             {
                 case AlertKind.Error:
-                {
-                    Background = new SolidColorBrush(0xFFFFCCCC);
-                    if (Resources.TryGetResource("error_circle_regular", out var resource))
-                    {
-                        iconControl.Data = resource as Geometry;
-                    }
+                    Apply(iconControl, "AlertBoxErrorBackground", "error_circle_regular");
                     break;
-                }
                 case AlertKind.Warning:
-                {
-                    Background = new SolidColorBrush(0xFFFFFFCC);
-                    if (Resources.TryGetResource("warning_regular", out var resource))
-                    {
-                        iconControl.Data = resource as Geometry;
-                    }
+                    Apply(iconControl, "AlertBoxWarningBackground", "warning_regular");
                     break;
-                }
+            }
+        }
+
+        private void Apply(PathIcon iconControl, string backgroundKey, string iconKey)
+        {
+            if (Resources.TryGetResource(backgroundKey, ActualThemeVariant, out var background))
+            {
+                Background = background as IBrush;
+            }
+            if (Resources.TryGetResource(iconKey, ActualThemeVariant, out var icon))
+            {
+                iconControl.Data = icon as Geometry;
             }
         }
 
         public static readonly StyledProperty<AlertKind> KindProperty =
-            AvaloniaProperty.Register<AlertBox, AlertKind>(nameof(Kind), notifying: (o, e) =>
-            {
-                if (!e)
-                    (o as AlertBox)?.OnKindUpdate();
-            });
+            AvaloniaProperty.Register<AlertBox, AlertKind>(nameof(Kind));
 
         public AlertKind Kind
         {

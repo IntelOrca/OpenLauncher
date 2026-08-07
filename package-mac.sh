@@ -1,10 +1,10 @@
 #!/bin/bash
-#Modified from Avalonia's documentation: https://docs.avaloniaui.net/docs/0.10.x/distribution-publishing/macos
+#Modified from Avalonia's documentation: https://docs.avaloniaui.net/docs/deployment/macos
 set -e
 trap 'echo "Error packaging app"; exit 1' ERR
 
-APP_NAME="./src/openlauncher/bin/Release/net8.0/macos-universal/OpenLauncher.app"
-PUBLISH_OUTPUT_DIRECTORY="./src/openlauncher/bin/Release/net8.0/macos-universal/."
+APP_NAME="./src/openlauncher/bin/Release/net10.0/macos-universal/OpenLauncher.app"
+PUBLISH_OUTPUT_DIRECTORY="./src/openlauncher/bin/Release/net10.0/macos-universal/."
 
 INFO_PLIST="./info.plist"
 
@@ -39,10 +39,10 @@ sed -i -e "s/APP_VERSION_NUMBER/$VERSION_NUMBER/" "$APP_NAME/Contents/Info.plist
 #For whatever reason, sed on macOS creates a backup file when replacing text, so we need to remove it
 rm  "$APP_NAME/Contents/Info.plist-e"
 
-codesign --sign - --force --deep "./src/openlauncher/bin/Release/net8.0/macos-universal/OpenLauncher.app"
+codesign --sign - --force --deep "./src/openlauncher/bin/Release/net10.0/macos-universal/OpenLauncher.app"
 
-mkdir "$PUBLISH_OUTPUT_DIRECTORY/publish"
+mkdir -p "$PUBLISH_OUTPUT_DIRECTORY/publish"
 
 echo "Zipping OpenLauncher.app..."
 
-ditto -c -k --keepParent "./src/openlauncher/bin/Release/net8.0/macos-universal/OpenLauncher.app" "./src/openlauncher/bin/Release/net8.0/macos-universal/publish/OpenLauncher.zip"
+ditto -c -k --keepParent "./src/openlauncher/bin/Release/net10.0/macos-universal/OpenLauncher.app" "./src/openlauncher/bin/Release/net10.0/macos-universal/publish/OpenLauncher.zip"

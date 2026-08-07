@@ -12,6 +12,7 @@ namespace openlauncher
         public AlertBox()
         {
             InitializeComponent();
+            ActualThemeVariantChanged += (_, _) => OnKindUpdate();
         }
 
         private void InitializeComponent()
@@ -47,23 +48,23 @@ namespace openlauncher
             switch (Kind)
             {
                 case AlertKind.Error:
-                {
-                    Background = new SolidColorBrush(0xFFFFCCCC);
-                    if (Resources.TryGetResource("error_circle_regular", ActualThemeVariant, out var resource))
-                    {
-                        iconControl.Data = resource as Geometry;
-                    }
+                    Apply(iconControl, "AlertBoxErrorBackground", "error_circle_regular");
                     break;
-                }
                 case AlertKind.Warning:
-                {
-                    Background = new SolidColorBrush(0xFFFFFFCC);
-                    if (Resources.TryGetResource("warning_regular", ActualThemeVariant, out var resource))
-                    {
-                        iconControl.Data = resource as Geometry;
-                    }
+                    Apply(iconControl, "AlertBoxWarningBackground", "warning_regular");
                     break;
-                }
+            }
+        }
+
+        private void Apply(PathIcon iconControl, string backgroundKey, string iconKey)
+        {
+            if (Resources.TryGetResource(backgroundKey, ActualThemeVariant, out var background))
+            {
+                Background = background as IBrush;
+            }
+            if (Resources.TryGetResource(iconKey, ActualThemeVariant, out var icon))
+            {
+                iconControl.Data = icon as Geometry;
             }
         }
 

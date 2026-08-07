@@ -126,14 +126,19 @@
                 </Border>
                 <local:AlertBox x:Name="errorBox"
                                 Margin="0,0,0,8" />
-                <Grid x:Name="updateBoxContainer">
-                    <local:AlertBox Margin="0,0,0,8"
+                <Grid x:Name="updateBoxContainer"
+                      ColumnDefinitions="*,Auto"
+                      Margin="0,0,0,8"
+                      Background="{Binding #updateAlertBox.Background}">
+                    <local:AlertBox Grid.Column="0"
+                                    Name="updateAlertBox"
                                     Kind="Warning"
                                     Title="{x:Static p:Resources.LauncherUpdateTitle}"
                                     Message="{x:Static p:Resources.LauncherUpdateMessage}" />
-                    <Button Name="updateButton"
-                            Margin="0,0,14,0"
-                            HorizontalAlignment="Right"
+                    <Button Grid.Column="1"
+                            Name="updateButton"
+                            Margin="0,8,14,8"
+                            VerticalAlignment="Center"
                             Content="{x:Static p:Resources.Update}"
                             Click="update_Click">
                     </Button>

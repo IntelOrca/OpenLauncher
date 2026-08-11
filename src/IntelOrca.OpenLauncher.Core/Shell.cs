@@ -18,6 +18,26 @@ namespace IntelOrca.OpenLauncher.Core
             Process.Start(psi);
         }
 
+        public void OpenDirectory(string path)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                StartProcess("open", path);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                StartProcess("xdg-open", path);
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
+            }
+        }
+
         public int RunProcess(string name, params string[] args)
         {
             var psi = new ProcessStartInfo(name);

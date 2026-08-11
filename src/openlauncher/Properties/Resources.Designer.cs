@@ -116,6 +116,26 @@ namespace openlauncher.Properties {
                 return ResourceManager.GetString("FailedToLaunchGame", resourceCulture);
             }
         }
+        public static string OpenInFileExplorer {
+            get {
+                return ResourceManager.GetString("OpenInFileExplorer", resourceCulture);
+            }
+        }
+        public static string OpenInFileManager {
+            get {
+                return ResourceManager.GetString("OpenInFileManager", resourceCulture);
+            }
+        }
+        public static string OpenInFinder {
+            get {
+                return ResourceManager.GetString("OpenInFinder", resourceCulture);
+            }
+        }
+        public static string FailedToOpenInstallFolder {
+            get {
+                return ResourceManager.GetString("FailedToOpenInstallFolder", resourceCulture);
+            }
+        }
         
         public static string DownloadBuildFailedTitle {
             get {

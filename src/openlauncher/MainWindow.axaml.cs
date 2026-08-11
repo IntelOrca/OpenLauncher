@@ -30,6 +30,9 @@ namespace openlauncher
         {
             InitializeComponent();
 
+            openInstallFolderMenuItem.Header = GetOpenInstallFolderText();
+            ToolTip.SetPlacement(playButton, PlacementMode.Bottom);
+
             if (!Design.IsDesignMode)
             {
                 downloadProgress.IsVisible = false;
@@ -229,6 +232,26 @@ namespace openlauncher
             }
         }
 
+        private void playMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            playMenu.Open(playSplitButton);
+        }
+
+        private void openInstallFolderMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedMenuItem == null)
+                return;
+
+            try
+            {
+                new Shell().OpenDirectory(_selectedMenuItem.Game!.BinPath);
+            }
+            catch (Exception ex)
+            {
+                ShowError(string.Format(StringResources.FailedToOpenInstallFolder, _selectedMenuItem.Game!.Name), ex);
+            }
+        }
+
         private async Task RefreshInstalledVersionAsync()
         {
             if (_selectedMenuItem == null)
@@ -253,8 +276,18 @@ namespace openlauncher
                 if (!_isBusy)
                 {
                     playButton.IsEnabled = installService.CanLaunch();
+                    playMenuButton.IsEnabled = CanOpenInstallFolder();
                 }
-                ToolTip.SetTip(playButton, installService.ExecutablePath);
+                ToolTip.SetTip(playButton, new ToolTip
+                {
+                    MaxWidth = double.PositiveInfinity,
+                    Content = new TextBlock
+                    {
+                        Text = installService.ExecutablePath,
+                        TextWrapping = Avalonia.Media.TextWrapping.NoWrap
+                    }
+                });
+                ToolTip.SetHorizontalOffset(playButton, -playSplitButton.Bounds.Width);
             }
         }
 
@@ -403,14 +436,30 @@ namespace openlauncher
             if (value)
             {
                 playButton.IsEnabled = _selectedMenuItem?.InstallService.CanLaunch() ?? false;
+                playMenuButton.IsEnabled = CanOpenInstallFolder();
                 downloadButton.IsEnabled = buildsAvailable && !AutoUpdateEnabled();
                 versionDropdown.IsEnabled = !AutoUpdateEnabled();
             }
             else
             {
                 playButton.IsEnabled = value;
+                playMenuButton.IsEnabled = value;
                 downloadButton.IsEnabled = value;
             }
+        }
+
+        private bool CanOpenInstallFolder()
+        {
+            return _selectedMenuItem != null && Directory.Exists(_selectedMenuItem.Game!.BinPath);
+        }
+
+        private static string GetOpenInstallFolderText()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return StringResources.OpenInFileExplorer;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                return StringResources.OpenInFinder;
+            return StringResources.OpenInFileManager;
         }
         
         private bool AutoUpdateEnabled()

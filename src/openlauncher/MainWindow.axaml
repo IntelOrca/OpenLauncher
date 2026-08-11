@@ -77,11 +77,26 @@
                                     Padding="4">
                                 <TextBlock x:Name="installedVersionTextBlock" HorizontalAlignment="Stretch" />
                             </Border>
-                            <Button Grid.Column="2"
-                                    x:Name="playButton"
-                                    IsEnabled="False"
-                                    Content="{x:Static p:Resources.Play}"
-                                    Click="playButton_Click" />
+                            <StackPanel Grid.Column="2" x:Name="playSplitButton" Orientation="Horizontal">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu x:Name="playMenu">
+                                        <MenuItem x:Name="openInstallFolderMenuItem"
+                                                  Click="openInstallFolderMenuItem_Click" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                                <Button x:Name="playButton"
+                                        CornerRadius="4,0,0,4"
+                                        IsEnabled="False"
+                                        Content="{x:Static p:Resources.Play}"
+                                        Click="playButton_Click" />
+                                <Button x:Name="playMenuButton"
+                                        Width="32"
+                                        Margin="-1,0,0,0"
+                                        CornerRadius="0,4,4,0"
+                                        IsEnabled="False"
+                                        Content="▼"
+                                        Click="playMenuButton_Click" />
+                            </StackPanel>
                         </Grid>
                         <TextBlock Text="{x:Static p:Resources.AvailableLabel}" />
                         <StackPanel Margin="4">
@@ -101,6 +116,7 @@
                                              Value="0.5" />
                                 <Button x:Name="downloadButton"
                                         Grid.Column="2"
+                                        Width="141"
                                         IsEnabled="False"
                                         Content="{x:Static p:Resources.Download}"
                                         Click="downloadButton_Click" />
